@@ -1,1 +1,8 @@
 * text=auto !eol
+/README_EN.txt -text
+apps/notepad++/npp.7.9.1.Installer.exe -text
+apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi -text
+apps/winmerge/WinMerge-2.16.8-Setup.exe -text
+/changelog.txt -text
+deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf -text
+/license.txt -text
