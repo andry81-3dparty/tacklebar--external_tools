@@ -1,5 +1,10 @@
 * text=auto !eol
+.github/FUNDING.yml -text
 /README_EN.txt -text
+__init__/__init__.bat -text
+_config/config.0.vars.in -text
+_config/config.system.vars.in -text
+/_install.bat -text
 apps/notepad++/npp.7.9.1.Installer.exe -text
 apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi -text
 apps/winmerge/WinMerge-2.16.8-Setup.exe -text

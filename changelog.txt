@@ -1,3 +1,7 @@
+2020.11.27:
+* new: init script and configuration files
+* new: install script to install all applications together
+
 2020.11.24:
 * new: changelog file
 * new: initial repository files
