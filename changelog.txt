@@ -1,3 +1,7 @@
+2020.11.28:
+* fixed: minor fixup
+* new: _install.bat: Notepad++ PythonScript plugin configuration and tacklebar scripts installation
+
 2020.11.27:
 * new: init script and configuration files
 * new: install script to install all applications together
