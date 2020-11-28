@@ -1,4 +1,7 @@
 2020.11.28:
+* refactor: _install.bat: minor refactor
+
+2020.11.28:
 * fixed: minor fixup
 * new: _install.bat: Notepad++ PythonScript plugin configuration and tacklebar scripts installation
 

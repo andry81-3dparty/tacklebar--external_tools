@@ -128,7 +128,7 @@ echo.
 
 :REPEAT_INSTALL_3DPARTY_ASK
 set "CONTINUE_INSTALL_ASK="
-echo.Do you want to continue [y]es/[N]o?
+echo.Do you want to continue [y]es/[n]o?
 set /P "CONTINUE_INSTALL_ASK="
 
 if /i "%CONTINUE_INSTALL_ASK%" == "y" goto CONTINUE_INSTALL_3DPARTY_ASK
@@ -170,7 +170,7 @@ echo.Updating "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScri
 
 if exist "%USERPROFILE%/AppData/Roaming/Notepad++/plugins/Config/PythonScriptStartup.cnf" (
   for /F "useback eol= tokens=* delims=" %%i in ("%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%/deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf") do (
-    findstr /R /C:"^%%i$" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
+    "%WINDIR%/System32/findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
       echo.+%%i
       (echo.%%i) >> "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf"
     )
