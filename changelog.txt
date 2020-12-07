@@ -1,3 +1,6 @@
+2020.12.07:
+* changed: _install.bat: 3dparty version strings moved into system config file
+
 2020.11.28:
 * refactor: _install.bat: minor refactor
 

@@ -115,12 +115,12 @@ mkdir "%EMPTY_DIR_TMP%" || (
 
 echo.
 echo.Required set of 3dparty applications:
-echo. * Notepad++ (7.9.1+, https://notepad-plus-plus.org/downloads/ )
-echo. * Notepad++ PythonScript plugin (1.5.4+, https://github.com/bruderstein/PythonScript )
-echo. * WinMerge (2.16.8+, https://winmerge.org/downloads )
+echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+, https://notepad-plus-plus.org/downloads/ )
+echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+, https://github.com/bruderstein/PythonScript )
+echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
 echo.
 echo.Optional set of 3dparty applications:
-echo. * Araxis Merge (2017+, https://www.araxis.com/merge/documentation-windows/release-notes.en )
+echo. * Araxis Merge (%ARAXIS_MERGE_MIN_VER_STR%+, https://www.araxis.com/merge/documentation-windows/release-notes.en )
 echo.
 echo. CAUTION:
 echo.   You must install at least Notepad++ (with PythonScript plugin) and WinMerge (or Araxis Merge) to continue.
