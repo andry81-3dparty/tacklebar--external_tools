@@ -1,12 +1,13 @@
 * README_EN.txt
-* 2020.11.24
-* External application tools
+* 2020.12.08
+* tacklebar--external_tools
 
 1. DESCRIPTION
 2. LICENSE
 3. DEPENDENCIES
 4. REPOSITORIES
-5. AUTHOR
+5. INSTALLATION
+6. AUTHOR
 
 -------------------------------------------------------------------------------
 1. DESCRIPTION
@@ -30,6 +31,11 @@ https://en.wikipedia.org/wiki/MIT_License)
 -------------------------------------------------------------------------------
 3. DEPENDENCIES
 -------------------------------------------------------------------------------
+Currently all 3dparty applications runs without any other external dependecy.
+
+But here is some links to start search from in case if such dependencies would
+be revealed.
+
 External dependencies:
   * Microsoft Visual C++ 2010 Runtime:
 
@@ -56,7 +62,14 @@ Second mirror:
   * https://bitbucket.org/andry81/tacklebar-external_tools/src/trunk
   * https://bitbucket.org/andry81/tacklebar-external_tools.git
 
+------------------------------------------------------------------------------
+5. INSTALLATION
+------------------------------------------------------------------------------
+
+1. To install all 3dparty aplications, plugins and extensions altogether do
+   run the `_install.bat` script.
+
 -------------------------------------------------------------------------------
-5. AUTHOR
+6. AUTHOR
 -------------------------------------------------------------------------------
 andry at inbox dot ru
