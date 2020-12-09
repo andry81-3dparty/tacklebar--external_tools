@@ -1,4 +1,6 @@
 * text=auto !eol
+._install/__init__.bat -text
+._install/_install.detect_3dparty.notepadpp.bat -text
 .github/FUNDING.yml -text
 /README_EN.txt -text
 __init__/__init__.bat -text

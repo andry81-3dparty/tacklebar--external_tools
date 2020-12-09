@@ -144,18 +144,38 @@ goto REPEAT_INSTALL_3DPARTY_ASK
 
 :CONTINUE_INSTALL_3DPARTY_ASK
 
-rem CAUTION:
-rem   Always detect all programs to print detected variable values
+echo.
 
 echo.Installing Notepad++...
 
-start /B /WAIT "" "%NOTEPAD_PLUS_PLUS_SETUP%"
+call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP%%"
 
 echo.
 
+call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.bat"
+
+echo.
+
+if defined DETECTED_NPP_EDITOR if exist "%DETECTED_NPP_EDITOR%" goto DETECTED_NPP_EDITOR_OK
+
+(
+  echo.%?~nx0%: error: Notepad++ must be already installed before continue.
+  echo.%?~nx0%: info: installation is canceled.
+  exit /b 127
+) >&2
+
+:DETECTED_NPP_EDITOR_OK
+
 echo.Installing Notepad++ PythonScript plugin...
 
-start /B /WAIT "" "%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%"
+rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
+for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP=%%~fi"
+for /F "eol=	 tokens=* delims=" %%i in ("%DETECTED_NPP_EDITOR%\.") do for /F "eol=	 tokens=* delims=" %%j in ("%%~dpi\.") do set "DETECTED_NPP_INSTALL_DIR=%%~fj"
+
+rem CAUTION:
+rem   The plugin installer is broken, must always point the Notepad++ installation location!
+rem
+call :CMD start /B /WAIT "" "%%WINDIR%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
 
 echo.
 
@@ -247,7 +267,7 @@ echo.
 
 echo.Installing WinMerge...
 
-start /B /WAIT "" "%WINMERGE_SETUP%"
+call :CMD start /B /WAIT "" "%%WINMERGE_SETUP%%"
 
 echo.
 

@@ -1,4 +1,8 @@
 2020.12.09:
+* fixed: the Notepad++ PythonScript plugin installer is broken, must always point the Notepad++ installation location!
+* new: detect Notepad++ installation location
+
+2020.12.09:
 * changed: `pause` commands replaced by calls to the `pause.bat` script
 
 2020.12.08:
