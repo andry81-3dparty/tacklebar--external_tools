@@ -114,10 +114,15 @@ mkdir "%EMPTY_DIR_TMP%" || (
 ) >&2
 
 echo.
-echo.Required set of 3dparty applications:
+echo.Required set of 3dparty applications included into install:
 echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+, https://notepad-plus-plus.org/downloads/ )
 echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+, https://github.com/bruderstein/PythonScript )
 echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
+echo.
+echo.Required set of 3dparty applications not included into install:
+echo  * ffmpeg (ffmpeg module, https://ffmpeg.org/download.html#build-windows )
+echo. * msys2 (coreutils package, https://www.msys2.org/#installation)
+echo. * cygwin (coreutils package, https://cygwin.com )
 echo.
 echo.Optional set of 3dparty applications:
 echo. * Araxis Merge (%ARAXIS_MERGE_MIN_VER_STR%+, https://www.araxis.com/merge/documentation-windows/release-notes.en )

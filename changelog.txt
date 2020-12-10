@@ -1,3 +1,6 @@
+2020.12.10:
+* changed: _install.bat: print all required set of 3dparty applications to install
+
 2020.12.09:
 * fixed: the Notepad++ PythonScript plugin installer is broken, must always point the Notepad++ installation location!
 * new: detect Notepad++ installation location
