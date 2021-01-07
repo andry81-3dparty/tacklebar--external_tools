@@ -17,12 +17,6 @@ for %%i in (PROJECT_ROOT PROJECT_LOG_ROOT PROJECT_CONFIG_ROOT CONTOOLS_ROOT CONT
 
 if %IMPL_MODE%0 NEQ 0 goto IMPL
 
-rem no local logging if nested call
-set WITH_LOGGING=0
-if %NEST_LVL%0 EQU 0 set WITH_LOGGING=1
-
-if %WITH_LOGGING% EQU 0 goto IMPL
-
 rem use stdout/stderr redirection with logging
 call "%%CONTOOLS_ROOT%%/std/get_wmic_local_datetime.bat"
 set "LOG_FILE_NAME_SUFFIX=%RETURN_VALUE:~0,4%'%RETURN_VALUE:~4,2%'%RETURN_VALUE:~6,2%_%RETURN_VALUE:~8,2%'%RETURN_VALUE:~10,2%'%RETURN_VALUE:~12,2%''%RETURN_VALUE:~15,3%"
@@ -33,6 +27,7 @@ set "PROJECT_LOG_FILE=%PROJECT_LOG_DIR%/%LOG_FILE_NAME_SUFFIX%.%~n0.log"
 if not exist "%PROJECT_LOG_DIR%" ( mkdir "%PROJECT_LOG_DIR%" || exit /b )
 
 set IMPL_MODE=1
+
 rem CAUTION:
 rem   We should avoid use handles 3 and 4 while the redirection has take a place because handles does reuse
 rem   internally from left to right when being redirected externally.
@@ -42,6 +37,7 @@ rem   https://stackoverflow.com/questions/9878007/why-doesnt-my-stderr-redirecti
 rem   A partial analisis:
 rem   https://www.dostips.com/forum/viewtopic.php?p=14612#p14612
 rem
+
 "%COMSPEC%" /C call %0 %* 2>&1 | "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
 exit /b
 
@@ -69,7 +65,7 @@ if %NEST_LVL%0 EQU 0 call "%%CONTOOLS_ROOT%%/std/pause.bat"
 exit /b %LASTERROR%
 
 :MAIN
-rem call :CMD "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_install.xsh"
+rem call :CMD "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_PROJECT_ROOT%%/_install.xsh"
 rem exit /b
 rem 
 rem :CMD
@@ -121,10 +117,11 @@ echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
 echo.
 echo.Required set of 3dparty applications not included into install:
 echo  * ffmpeg (ffmpeg module, https://ffmpeg.org/download.html#build-windows )
-echo. * msys2 (coreutils package, https://www.msys2.org/#installation)
+echo. * msys2 (coreutils package, https://www.msys2.org/#installation )
 echo. * cygwin (coreutils package, https://cygwin.com )
 echo.
 echo.Optional set of 3dparty applications:
+echo. * ConEmu (%CONEMU_MIN_VER_STR%+, https://github.com/Maximus5/ConEmu )
 echo. * Araxis Merge (%ARAXIS_MERGE_MIN_VER_STR%+, https://www.araxis.com/merge/documentation-windows/release-notes.en )
 echo.
 echo. CAUTION:
@@ -148,7 +145,6 @@ goto REPEAT_INSTALL_3DPARTY_ASK
 ) >&2
 
 :CONTINUE_INSTALL_3DPARTY_ASK
-
 echo.
 
 echo.Installing Notepad++...
@@ -213,6 +209,7 @@ set "PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR=%USERPROFILE%\AppData\Roaming\Notepa
 if not exist "\\?\%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\" (
   echo.^>mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts"
   mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" 2>nul || "%WINDIR%/System32/robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" >nul
+  echo.
 )
 
 for %%i in (tacklebar\ startup.py) do (
@@ -236,6 +233,7 @@ if not exist "\\?\%NEW_PREV_INSTALL_DIR%" (
     echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
     goto INSTALL_WINMERGE
   ) >&2
+  echo.
 )
 
 if exist "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\startup.py" (
@@ -260,6 +258,7 @@ for %%i in (tacklebar\ startup.py) do (
         goto INSTALL_WINMERGE
       ) >&2
     )
+    echo.
   )
 )
 
@@ -285,6 +284,7 @@ if not exist "\\?\%~f3" (
     echo.%?~nx0%: error: could not create a target file directory: "%~3".
     exit /b 255
   ) >&2
+  echo.
 )
 call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" %%*
 exit /b
@@ -296,6 +296,7 @@ if not exist "\\?\%~f2" (
     echo.%?~nx0%: error: could not create a target directory: "%~2".
     exit /b 255
   ) >&2
+  echo.
 )
 call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
 exit /b
