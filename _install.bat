@@ -2,6 +2,7 @@
 
 setlocal
 
+set "?~0=%~0"
 set "?~dp0=%~dp0"
 set "?~n0=%~n0"
 set "?~nx0=%~nx0"
@@ -16,6 +17,32 @@ for %%i in (PROJECT_ROOT PROJECT_LOG_ROOT PROJECT_CONFIG_ROOT CONTOOLS_ROOT CONT
 )
 
 if %IMPL_MODE%0 NEQ 0 goto IMPL
+
+rem script flags
+set FLAG_CHCP=65001
+
+:FLAGS_OUTTER_LOOP
+
+rem flags always at first
+set "FLAG=%~1"
+
+if defined FLAG ^
+if not "%FLAG:~0,1%" == "-" set "FLAG="
+
+if defined FLAG (
+  if "%FLAG%" == "-chcp" (
+    set "FLAG_CHCP=%~2"
+    shift
+  ) else (
+    echo.%?~nx0%: error: invalid flag: %FLAG%
+    exit /b -255
+  ) >&2
+
+  shift
+
+  rem read until no flags
+  goto FLAGS_OUTTER_LOOP
+)
 
 rem use stdout/stderr redirection with logging
 call "%%CONTOOLS_ROOT%%/std/get_wmic_local_datetime.bat"
@@ -38,15 +65,37 @@ rem   A partial analisis:
 rem   https://www.dostips.com/forum/viewtopic.php?p=14612#p14612
 rem
 
-"%COMSPEC%" /C call %0 %* 2>&1 | "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
+"%COMSPEC%" /C call "%?~0%" %* 2>&1 | "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
 exit /b
 
 :IMPL
+rem script flags
+
+:FLAGS_INNER_LOOP
+
+rem flags always at first
+set "FLAG=%~1"
+
+if defined FLAG ^
+if not "%FLAG:~0,1%" == "-" set "FLAG="
+
+if defined FLAG (
+  if "%FLAG%" == "-chcp" (
+    rem
+    shift
+  )
+
+  shift
+
+  rem read until no flags
+  goto FLAGS_INNER_LOOP
+)
+
 set /A NEST_LVL+=1
 
 call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"
 
-call "%%CONTOOLS_ROOT%%/std/chcp.bat" 65001
+call "%%CONTOOLS_ROOT%%/std/chcp.bat" %FLAG_CHCP%
 set RESTORE_LOCALE=1
 
 call :MAIN %%*
@@ -75,32 +124,6 @@ rem (
 rem   %*
 rem )
 rem exit /b
-
-rem script flags
-rem set FLAG_IGNORE_BUTTONBARS=0
-
-:FLAGS_LOOP
-
-rem flags always at first
-set "FLAG=%~1"
-
-if defined FLAG ^
-if not "%FLAG:~0,1%" == "-" set "FLAG="
-
-if defined FLAG (
-  rem if "%FLAG%" == "-ignore_buttonbars" (
-  rem   set FLAG_IGNORE_BUTTONBARS=1
-  rem ) else
-  (
-    echo.%?~nx0%: error: invalid flag: %FLAG%
-    exit /b -255
-  ) >&2
-
-  shift
-
-  rem read until no flags
-  goto FLAGS_LOOP
-)
 
 set "EMPTY_DIR_TMP=%SCRIPT_TEMP_CURRENT_DIR%\emptydir"
 

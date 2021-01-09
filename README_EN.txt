@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2020.12.08
+* 2021.01.09
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -7,13 +7,16 @@
 3. DEPENDENCIES
 4. REPOSITORIES
 5. INSTALLATION
+5.1. Windows XP support
 6. AUTHOR
 
 -------------------------------------------------------------------------------
 1. DESCRIPTION
 -------------------------------------------------------------------------------
 External application tools:
-  * Notepad++ (plus PythonScript plugin)
+  * Notepad++
+  * Notepad++ PythonScript plugin
+  * Notepad++ PythonScript plugin startup scripts
   * WinMerge
 
 The latest version is here: https://sf.net/p/tacklebar
@@ -66,8 +69,30 @@ Second mirror:
 5. INSTALLATION
 ------------------------------------------------------------------------------
 
-1. To install all 3dparty aplications, plugins and extensions altogether do
-   run the `_install.bat` script.
+To install all 3dparty aplications, plugins and extensions altogether:
+
+  >
+  _install.bat
+
+------------------------------------------------------------------------------
+5.1. Windows XP support
+------------------------------------------------------------------------------
+
+To be able to install under the Window XP you can avoid switch to a broken
+codepage 65001 (utf-8) as used by default:
+
+(DOS codepage)
+
+  >
+  _install.bat -chcp 866
+
+
+Or
+
+(Windows codepage)
+
+  >
+  _install.bat -chcp 1251
 
 -------------------------------------------------------------------------------
 6. AUTHOR
