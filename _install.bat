@@ -310,7 +310,7 @@ if not exist "\\?\%~f3" (
   ) >&2
   echo.
 )
-call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" %%*
+call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" -chcp %%FLAG_CHCP%% %%*
 exit /b
 
 :XCOPY_DIR
@@ -322,7 +322,7 @@ if not exist "\\?\%~f2" (
   ) >&2
   echo.
 )
-call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
+call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp %%FLAG_CHCP%% %%*
 exit /b
 
 :CMD

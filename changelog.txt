@@ -1,4 +1,7 @@
 2021.01.09:
+* changed: _install.bat: missed changes
+
+2021.01.09:
 * changed: _install.bat: cleanup
 
 2021.01.09:
