@@ -78,21 +78,13 @@ To install all 3dparty aplications, plugins and extensions altogether:
 5.1. Windows XP support
 ------------------------------------------------------------------------------
 
-To be able to install under the Window XP you can avoid switch to a broken
-codepage 65001 (utf-8) as used by default:
+The default codepage in the `config.system.vars` configuration file is
+`1251` (Windows codepage). You can change it:
 
 (DOS codepage)
 
   >
   _install.bat -chcp 866
-
-
-Or
-
-(Windows codepage)
-
-  >
-  _install.bat -chcp 1251
 
 -------------------------------------------------------------------------------
 6. AUTHOR

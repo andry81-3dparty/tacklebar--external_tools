@@ -1,4 +1,10 @@
 2021.01.09:
+* fixed: _install*.bat: Windows XP compatibility
+* fixed: __init__/__init__.bat: config generations
+* new: _install*.bat: `-chcp` flag for an arbitrary codepage request
+* changed: readme update
+
+2021.01.09:
 * changed: _install.bat: missed changes
 
 2021.01.09:
@@ -7,6 +13,7 @@
 2021.01.09:
 * fixed: _install.bat: Windows XP compatibility
 * new: _install.bat: `-chcp` flag for an arbitrary codepage request
+* changed: readme update
 
 2021.01.08:
 * changed: apps/notepad++: upgrade Notepad++ from 7.9.1 to 7.9.2

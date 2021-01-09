@@ -19,32 +19,6 @@ for %%i in (PROJECT_ROOT PROJECT_LOG_ROOT PROJECT_CONFIG_ROOT CONTOOLS_ROOT CONT
 
 if %IMPL_MODE%0 NEQ 0 goto IMPL
 
-rem script flags
-set FLAG_CHCP=65001
-
-:FLAGS_OUTTER_LOOP
-
-rem flags always at first
-set "FLAG=%~1"
-
-if defined FLAG ^
-if not "%FLAG:~0,1%" == "-" set "FLAG="
-
-if defined FLAG (
-  if "%FLAG%" == "-chcp" (
-    set "FLAG_CHCP=%~2"
-    shift
-  ) else (
-    echo.%?~nx0%: error: invalid flag: %FLAG%
-    exit /b -255
-  ) >&2
-
-  shift
-
-  rem read until no flags
-  goto FLAGS_OUTTER_LOOP
-)
-
 rem use stdout/stderr redirection with logging
 call "%%CONTOOLS_ROOT%%/std/get_wmic_local_datetime.bat"
 set "LOG_FILE_NAME_SUFFIX=%RETURN_VALUE:~0,4%'%RETURN_VALUE:~4,2%'%RETURN_VALUE:~6,2%_%RETURN_VALUE:~8,2%'%RETURN_VALUE:~10,2%'%RETURN_VALUE:~12,2%''%RETURN_VALUE:~15,3%"
@@ -71,8 +45,9 @@ exit /b
 
 :IMPL
 rem script flags
+set "FLAG_CHCP="
 
-:FLAGS_INNER_LOOP
+:FLAGS_LOOP
 
 rem flags always at first
 set "FLAG=%~1"
@@ -82,22 +57,28 @@ if not "%FLAG:~0,1%" == "-" set "FLAG="
 
 if defined FLAG (
   if "%FLAG%" == "-chcp" (
-    rem
+    set "FLAG_CHCP=%~2"
     shift
-  )
+  ) else (
+    echo.%?~nx0%: error: invalid flag: %FLAG%
+    exit /b -255
+  ) >&2
 
   shift
 
   rem read until no flags
-  goto FLAGS_INNER_LOOP
+  goto FLAGS_LOOP
 )
 
 set /A NEST_LVL+=1
 
 call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"
 
-call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%FLAG_CHCP%%
-set RESTORE_LOCALE=1
+set RESTORE_LOCALE=0
+if defined FLAG_CHCP (
+  call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%FLAG_CHCP%%
+  set RESTORE_LOCALE=1
+) else for /F "usebackq eol= tokens=1,* delims=:" %%i in (`chcp.com 2^>nul`) do set "CURRENT_CP=%%j"
 
 call :MAIN %%*
 set LASTERROR=%ERRORLEVEL%
@@ -200,7 +181,7 @@ for /F "eol=	 tokens=* delims=" %%i in ("%DETECTED_NPP_EDITOR%\.") do for /F "eo
 rem CAUTION:
 rem   The plugin installer is broken, must always point the Notepad++ installation location!
 rem
-call :CMD start /B /WAIT "" "%%WINDIR%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
 
 echo.
 
@@ -215,7 +196,7 @@ echo.Updating "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScri
 
 if exist "%USERPROFILE%/AppData/Roaming/Notepad++/plugins/Config/PythonScriptStartup.cnf" (
   for /F "useback eol= tokens=* delims=" %%i in ("%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%/deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf") do (
-    "%WINDIR%/System32/findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
+    "%SystemRoot%\System32\findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
       echo.+%%i
       (echo.%%i) >> "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf"
     )
@@ -232,7 +213,7 @@ set "PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR=%USERPROFILE%\AppData\Roaming\Notepa
 
 if not exist "\\?\%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\" (
   echo.^>mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts"
-  mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" 2>nul || "%WINDIR%/System32/robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" >nul
+  mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" >nul
   echo.
 )
 
@@ -244,14 +225,14 @@ goto IGNORE_PYTHON_SCRIPT_BACKUP
 
 :PYTHON_SCRIPT_BACKUP
 if not exist "\\?\%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install\" (
-  mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install" 2>nul || "%WINDIR%/System32/robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install" >nul
+  mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install" >nul
 )
 
 set "NEW_PREV_INSTALL_DIR=%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\.tacklebar_prev_install\tacklebar_prev_install_%LOG_FILE_NAME_SUFFIX%"
 
 if not exist "\\?\%NEW_PREV_INSTALL_DIR%" (
   echo.^>mkdir "%NEW_PREV_INSTALL_DIR%"
-  mkdir "%NEW_PREV_INSTALL_DIR%" 2>nul || "%WINDIR%/System32/robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%NEW_PREV_INSTALL_DIR%" >nul
+  mkdir "%NEW_PREV_INSTALL_DIR%" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%NEW_PREV_INSTALL_DIR%" >nul
   if not exist "\\?\%NEW_PREV_INSTALL_DIR%" (
     echo.%?~nx0%: error: could not create a backup file directory: "%NEW_PREV_INSTALL_DIR%".
     echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
@@ -268,14 +249,14 @@ for %%i in (tacklebar\ startup.py) do (
   if exist "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%~i" (
     echo.^>move: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NEW_PREV_INSTALL_DIR%"
     if not "%%~nxi" == "" (
-      "%WINDIR%/System32/robocopy.exe" /MOVE "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%" "%NEW_PREV_INSTALL_DIR%" "%%i" >nul
+      "%SystemRoot%\System32\robocopy.exe" /MOVE "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%" "%NEW_PREV_INSTALL_DIR%" "%%i" >nul
       if not exist "\\?\%NEW_PREV_INSTALL_DIR%\%%i" (
         echo.%?~nx0%: error: could not move previous installation file: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NEW_PREV_INSTALL_DIR%"
         echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
         goto INSTALL_WINMERGE
       ) >&2
     ) else (
-      "%WINDIR%/System32/robocopy.exe" /MOVE /E "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i\" "%NEW_PREV_INSTALL_DIR%\%%i\" "*.*" >nul
+      "%SystemRoot%\System32\robocopy.exe" /MOVE /E "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i\" "%NEW_PREV_INSTALL_DIR%\%%i\" "*.*" >nul
       if not exist "\\?\%NEW_PREV_INSTALL_DIR%\%%i" (
         echo.%?~nx0%: error: could not move previous installation directory: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NEW_PREV_INSTALL_DIR%"
         echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
@@ -304,25 +285,25 @@ exit /b 0
 :XCOPY_FILE
 if not exist "\\?\%~f3" (
   echo.^>mkdir "%~3"
-  mkdir "%~3" 2>nul || "%WINDIR%/System32/robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%~3" >nul || (
+  mkdir "%~3" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%~3" >nul || (
     echo.%?~nx0%: error: could not create a target file directory: "%~3".
     exit /b 255
   ) >&2
   echo.
 )
-call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" -chcp %%FLAG_CHCP%% %%*
+call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" -chcp "%%CURRENT_CP%%" %%*
 exit /b
 
 :XCOPY_DIR
 if not exist "\\?\%~f2" (
   echo.^>mkdir "%~2"
-  mkdir "%~2" 2>nul || "%WINDIR%/System32/robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%~2" >nul || (
+  mkdir "%~2" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%~2" >nul || (
     echo.%?~nx0%: error: could not create a target directory: "%~2".
     exit /b 255
   ) >&2
   echo.
 )
-call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp %%FLAG_CHCP%% %%*
+call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp "%%CURRENT_CP%%" %%*
 exit /b
 
 :CMD

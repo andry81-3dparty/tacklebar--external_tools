@@ -31,7 +31,7 @@ call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT               
 
 if not defined PROJECT_OUTPUT_ROOT call :CANONICAL_PATH PROJECT_OUTPUT_ROOT     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_out"
 
-call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT        "%%PROJECT_EXTERNAL_TOOLS_OUTPUT_ROOT%%/config/tacklebar--external_tools"
+call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT        "%%PROJECT_OUTPUT_ROOT%%/config/tacklebar--external_tools"
 
 call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT            "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
 
@@ -51,6 +51,18 @@ if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%/config.syste
 
 set CONFIG_INDEX=system
 call :LOAD_CONFIG || exit /b
+
+call "%%CONTOOLS_ROOT%%/std/get_wmic_os_version.bat"
+
+for /F "tokens=1,* delims=." %%i in ("%RETURN_VALUE%") do (
+  if "%%i" == "5" (
+    if defined CHCP:OSWINXP (
+      for /F "usebackq eol= tokens=1,* delims==" %%k in (`@set CHCP:OSWINXP 2^>nul`) do if /i "%%k" == "CHCP:OSWINXP" set CHCP=%%l
+      set "%%k="
+    )
+  )
+  if defined CHCP:OSWINXP set "CHCP:OSWINXP="
+)
 
 if defined CHCP chcp %CHCP%
 
@@ -74,7 +86,7 @@ set /A CONFIG_INDEX+=1
 goto LOAD_CONFIG_LOOP
 
 :LOAD_CONFIG
-call "%%CONTOOLS_ROOT%%/std/load_config.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.%%CONFIG_INDEX%%.vars" && exit /b
+call "%%CONTOOLS_ROOT%%/std/load_config.bat" -allow_not_known_class_as_var_name "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.%%CONFIG_INDEX%%.vars" && exit /b
 
 if %MUST_LOAD_CONFIG% NEQ 0 (
   echo.%~nx0: error: `%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%/config.%CONFIG_INDEX%.vars` is not loaded.
