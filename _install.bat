@@ -187,14 +187,14 @@ echo.
 
 echo.Updating Notepad++ PythonScript plugin configuration...
 
-if not exist "%USERPROFILE%/AppData/Roaming/Notepad++\" (
-  echo.%?~nx0%: error: Notepad++ user configuration directory is not found: "%USERPROFILE%/AppData/Roaming/Notepad++"
+if not exist "%USERPROFILE%/Application Data/Notepad++\" (
+  echo.%?~nx0%: error: Notepad++ user configuration directory is not found: "%USERPROFILE%/Application Data/Notepad++"
   goto INSTALL_WINMERGE
 ) >&2
 
 echo.Updating "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf"...
 
-if exist "%USERPROFILE%/AppData/Roaming/Notepad++/plugins/Config/PythonScriptStartup.cnf" (
+if exist "%USERPROFILE%/Application Data/Notepad++/plugins/Config/PythonScriptStartup.cnf" (
   for /F "useback eol= tokens=* delims=" %%i in ("%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%/deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf") do (
     "%SystemRoot%\System32\findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
       echo.+%%i
@@ -202,7 +202,7 @@ if exist "%USERPROFILE%/AppData/Roaming/Notepad++/plugins/Config/PythonScriptSta
     )
   )
 ) else (
-  call :XCOPY_FILE "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/deploy/notepad++/plugins/PythonScript/Config" PythonScriptStartup.cnf "%%USERPROFILE%%/AppData/Roaming/Notepad++/plugins/Config" /Y /D /H
+  call :XCOPY_FILE "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/deploy/notepad++/plugins/PythonScript/Config" PythonScriptStartup.cnf "%%USERPROFILE%%/Application Data/Notepad++/plugins/Config" /Y /D /H
 )
 
 echo.
