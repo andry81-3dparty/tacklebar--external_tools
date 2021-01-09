@@ -3,6 +3,7 @@
 setlocal
 
 set "?~0=%~0"
+set "?~f0=%~f0"
 set "?~dp0=%~dp0"
 set "?~n0=%~n0"
 set "?~nx0=%~nx0"
@@ -95,7 +96,7 @@ set /A NEST_LVL+=1
 
 call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"
 
-call "%%CONTOOLS_ROOT%%/std/chcp.bat" %FLAG_CHCP%
+call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%FLAG_CHCP%%
 set RESTORE_LOCALE=1
 
 call :MAIN %%*
