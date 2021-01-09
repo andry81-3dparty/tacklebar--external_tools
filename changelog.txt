@@ -1,4 +1,7 @@
 2021.01.09:
+* changed: _install.bat: cleanup
+
+2021.01.09:
 * fixed: _install.bat: Windows XP compatibility
 * new: _install.bat: `-chcp` flag for an arbitrary codepage request
 
