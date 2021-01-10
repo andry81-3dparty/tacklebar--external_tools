@@ -1,4 +1,11 @@
 2021.01.10:
+* fixed: _install.bat: Windows XP compatibility and execution fixup
+* fixed: _install.bat: direct robocopy usage in case of execution under Windows XP, replaced by the `move_dir.vbs` script
+* changed: _install.bat: changed a 3dparty backup strategy for files and directories form the user `Application Data`, do backup 3dparty files and directories into `tacklebar` installation directory instead of inplace into the user `Application Data`
+* changed: `deps` directory is removed
+* changed: readme update
+
+2021.01.10:
 * new: _install.bat: codepage change output
 
 2021.01.09:

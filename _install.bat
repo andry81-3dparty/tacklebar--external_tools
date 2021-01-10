@@ -70,6 +70,9 @@ if defined FLAG (
   goto FLAGS_LOOP
 )
 
+rem there to install
+set "INSTALL_TO_DIR=%~1"
+
 set /A NEST_LVL+=1
 
 call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"
@@ -114,6 +117,57 @@ mkdir "%EMPTY_DIR_TMP%" || (
   echo.%?~n0%: error: could not create a directory: "%EMPTY_DIR_TMP%".
   exit /b 255
 ) >&2
+
+if not defined INSTALL_TO_DIR if not defined COMMANDER_SCRIPTS_ROOT (
+  echo.%?~nx0%: error: INSTALL_TO_DIR must be defined if COMMANDER_SCRIPTS_ROOT is not defined
+  exit /b 1
+) >&2
+
+if defined INSTALL_TO_DIR (
+  call :CANONICAL_PATH INSTALL_TO_DIR "%%INSTALL_TO_DIR%%"
+) else (
+  call :CANONICAL_PATH COMMANDER_SCRIPTS_ROOT "%%COMMANDER_SCRIPTS_ROOT%%"
+)
+
+if defined INSTALL_TO_DIR (
+  if not exist "\\?\%INSTALL_TO_DIR%\" (
+    echo.%?~nx0%: error: INSTALL_TO_DIR is not a directory: "%INSTALL_TO_DIR%"
+    exit /b 10
+  ) >&2
+) else (
+  if not exist "\\?\%COMMANDER_SCRIPTS_ROOT%\" (
+    echo.%?~nx0%: error: COMMANDER_SCRIPTS_ROOT is not a directory: "%COMMANDER_SCRIPTS_ROOT%"
+    exit /b 11
+  ) >&2
+)
+
+if defined INSTALL_TO_DIR goto IGNORE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
+
+echo.* COMMANDER_SCRIPTS_ROOT="%COMMANDER_SCRIPTS_ROOT%"
+echo.The explicit installation directory is not defined, the installation will be proceed into directory from the `COMMANDER_SCRIPTS_ROOT` variable.
+echo.Close all scripts has been running from the previous installation directory before continue (previous installation directory will be moved and renamed).
+echo.
+
+:REPEAT_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to continue [y]es/[n]o?
+set /P "CONTINUE_INSTALL_ASK="
+
+if /i "%CONTINUE_INSTALL_ASK%" == "y" goto CONTINUE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT
+if /i "%CONTINUE_INSTALL_ASK%" == "n" goto CANCEL_INSTALL_TO_COMMANDER_SCRIPTS_ROOT
+
+goto REPEAT_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
+
+:CANCEL_INSTALL_TO_COMMANDER_SCRIPTS_ROOT
+(
+  echo.%?~nx0%: info: installation is canceled.
+  exit /b 127
+) >&2
+
+:IGNORE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
+:CONTINUE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT
+
+if not defined INSTALL_TO_DIR set "INSTALL_TO_DIR=%COMMANDER_SCRIPTS_ROOT%"
 
 echo.
 echo.Required set of 3dparty applications included into install:
@@ -193,13 +247,13 @@ if not exist "%USERPROFILE%/Application Data/Notepad++\" (
   goto INSTALL_WINMERGE
 ) >&2
 
-echo.Updating "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf"...
+echo.Updating "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf"...
 
 if exist "%USERPROFILE%/Application Data/Notepad++/plugins/Config/PythonScriptStartup.cnf" (
   for /F "useback eol= tokens=* delims=" %%i in ("%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%/deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf") do (
-    "%SystemRoot%\System32\findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
+    "%SystemRoot%\System32\findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
       echo.+%%i
-      (echo.%%i) >> "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScriptStartup.cnf"
+      (echo.%%i) >> "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf"
     )
   )
 ) else (
@@ -208,34 +262,41 @@ if exist "%USERPROFILE%/Application Data/Notepad++/plugins/Config/PythonScriptSt
 
 echo.
 
-echo.Updating "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\"...
+echo.Updating "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts\"...
 
-set "PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR=%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts"
+set "PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR=%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts"
 
-if not exist "\\?\%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\" (
-  echo.^>mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts"
-  mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts" >nul
+if not exist "\\?\%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts\" (
+  echo.^>mkdir "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts"
+  call :MAKE_DIR "%%USERPROFILE%%\Application Data\Notepad++\plugins\Config\PythonScript\scripts"
   echo.
 )
 
 for %%i in (tacklebar\ startup.py) do (
-  if exist "\\?\%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\%%~i" goto PYTHON_SCRIPT_BACKUP
+  if exist "\\?\%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts\%%~i" goto NPP_PYTHON_SCRIPT_BACKUP
 )
 
-goto IGNORE_PYTHON_SCRIPT_BACKUP
+goto IGNORE_NPP_PYTHON_SCRIPT_BACKUP
 
-:PYTHON_SCRIPT_BACKUP
-if not exist "\\?\%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install\" (
-  mkdir "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%USERPROFILE%\AppData\Roaming\Notepad++\plugins\Config\PythonScript\scripts\.tacklebar_prev_install" >nul
+:NPP_PYTHON_SCRIPT_BACKUP
+set "NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT=%INSTALL_TO_DIR%\.notepadpp_tacklebar_prev_install"
+
+if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%" (
+  call :MAKE_DIR "%%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%%"
+  if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%" (
+    echo.%?~nx0%: error: could not create a backup file directory: "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%".
+    exit /b 20
+  ) >&2
+  echo.
 )
 
-set "NEW_PREV_INSTALL_DIR=%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\.tacklebar_prev_install\tacklebar_prev_install_%LOG_FILE_NAME_SUFFIX%"
+set "NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR=%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%\notepadpp_tacklebar_prev_install_%LOG_FILE_NAME_SUFFIX%"
 
-if not exist "\\?\%NEW_PREV_INSTALL_DIR%" (
-  echo.^>mkdir "%NEW_PREV_INSTALL_DIR%"
-  mkdir "%NEW_PREV_INSTALL_DIR%" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%NEW_PREV_INSTALL_DIR%" >nul
-  if not exist "\\?\%NEW_PREV_INSTALL_DIR%" (
-    echo.%?~nx0%: error: could not create a backup file directory: "%NEW_PREV_INSTALL_DIR%".
+if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%" (
+  echo.^>mkdir "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%"
+  call :MAKE_DIR "%%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%%"
+  if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%" (
+    echo.%?~nx0%: error: could not create a backup file directory: "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%".
     echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
     goto INSTALL_WINMERGE
   ) >&2
@@ -248,18 +309,18 @@ if exist "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\startup.py" (
 
 for %%i in (tacklebar\ startup.py) do (
   if exist "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%~i" (
-    echo.^>move: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NEW_PREV_INSTALL_DIR%"
+    echo.^>move: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%\%%i"
     if not "%%~nxi" == "" (
-      "%SystemRoot%\System32\robocopy.exe" /MOVE "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%" "%NEW_PREV_INSTALL_DIR%" "%%i" >nul
-      if not exist "\\?\%NEW_PREV_INSTALL_DIR%\%%i" (
-        echo.%?~nx0%: error: could not move previous installation file: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NEW_PREV_INSTALL_DIR%"
+      call :MOVE_FILE "%%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%%" "%%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%%" "%%i"
+      if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%\%%i" (
+        echo.%?~nx0%: error: could not move previous installation file: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%"
         echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
         goto INSTALL_WINMERGE
       ) >&2
     ) else (
-      "%SystemRoot%\System32\robocopy.exe" /MOVE /E "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i\" "%NEW_PREV_INSTALL_DIR%\%%i\" "*.*" >nul
-      if not exist "\\?\%NEW_PREV_INSTALL_DIR%\%%i" (
-        echo.%?~nx0%: error: could not move previous installation directory: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NEW_PREV_INSTALL_DIR%"
+      call :MOVE_DIR "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%\%%i"
+      if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%" (
+        echo.%?~nx0%: error: could not move previous installation directory: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%"
         echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
         goto INSTALL_WINMERGE
       ) >&2
@@ -268,7 +329,7 @@ for %%i in (tacklebar\ startup.py) do (
   )
 )
 
-:IGNORE_PYTHON_SCRIPT_BACKUP
+:IGNORE_NPP_PYTHON_SCRIPT_BACKUP
 call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/Scripts/Tools/ToolAdaptors/notepadplusplus/scripts/tacklebar" "%%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%%/tacklebar" /E /Y /D
 call :XCOPY_FILE "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/Scripts/Tools/ToolAdaptors/notepadplusplus/scripts" startup.py "%%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%%" /Y /D /H
 
@@ -286,7 +347,7 @@ exit /b 0
 :XCOPY_FILE
 if not exist "\\?\%~f3" (
   echo.^>mkdir "%~3"
-  mkdir "%~3" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%~3" >nul || (
+  call :MAKE_DIR "%%~3" || (
     echo.%?~nx0%: error: could not create a target file directory: "%~3".
     exit /b 255
   ) >&2
@@ -298,7 +359,7 @@ exit /b
 :XCOPY_DIR
 if not exist "\\?\%~f2" (
   echo.^>mkdir "%~2"
-  mkdir "%~2" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%~2" >nul || (
+  call :MAKE_DIR "%%~2" || (
     echo.%?~nx0%: error: could not create a target directory: "%~2".
     exit /b 255
   ) >&2
@@ -307,7 +368,46 @@ if not exist "\\?\%~f2" (
 call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp "%%CURRENT_CP%%" %%*
 exit /b
 
+:MAKE_DIR
+for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
+
+if exist "%SystemRoot%\System32\robocopy.exe" (
+  mkdir "%FILE_PATH%" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul
+) else mkdir "%FILE_PATH%" 2>nul
+exit /b
+
+:MOVE_FILE
+for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FROM_FILE_PATH=%%~fi"
+for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "TO_FILE_PATH=%%~fi"
+
+if exist "%SystemRoot%\System32\robocopy.exe" (
+  "%SystemRoot%\System32\robocopy.exe" /MOVE "%FROM_FILE_PATH%" "%TO_FILE_PATH%" "%~3" >nul
+) else move "%FROM_FILE_PATH%\%~3" "%TO_FILE_PATH%\%~3" >nul
+exit /b
+
+:MOVE_DIR
+for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FROM_FILE_DIR=%%~fi"
+for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "TO_FILE_DIR=%%~fi"
+
+if exist "%SystemRoot%\System32\robocopy.exe" (
+  "%SystemRoot%\System32\robocopy.exe" /MOVE /E "%FROM_FILE_DIR%" "%TO_FILE_DIR%" "*.*" >nul
+) else (
+  if exist "\\?\%TO_FILE_DIR%\" del /F /Q /A:D "%TO_FILE_DIR%"
+  "%SystemRoot%\System32\cscript.exe" //NOLOGO "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/shell/move_dir.vbs" "%FROM_FILE_DIR%" "%TO_FILE_DIR%"
+)
+exit /b
+
 :CMD
 echo.^>%*
 (%*)
 exit /b
+
+:CANONICAL_PATH
+setlocal DISABLEDELAYEDEXPANSION
+for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "RETURN_VALUE=%%~fi"
+rem set "RETURN_VALUE=%RETURN_VALUE:\=/%"
+(
+  endlocal
+  set "%~1=%RETURN_VALUE%"
+)
+exit /b 0

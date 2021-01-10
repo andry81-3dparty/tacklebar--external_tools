@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2021.01.09
+* 2021.01.10
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -69,10 +69,26 @@ Second mirror:
 5. INSTALLATION
 ------------------------------------------------------------------------------
 
-To install all 3dparty aplications, plugins and extensions altogether:
+NOTE:
+  The installation does not required particulary an installation directory
+  because the script does installation into 3dparty installation directories.
+  But because the files there can be rewrited or erase the tacklebar
+  installation directory still required to be pointed here to backup those
+  3dparty files and directories.
 
-  >
-  _install.bat
+1. To install into a directory do run the `_install.bat` with the first
+   argument - path to the installation root:
+
+    >
+    mkdir c:\totalcmd\scripts
+    _install.bat c:\totalcmd\scripts
+
+   NOTE:
+      You can call `_install.bat` without the destination path argument in case
+      if the `tacklebar` installation script (not one from this project) has
+      been already called at least once. In that case it would use the
+      destination path from the already registered `COMMANDER_SCRIPTS_ROOT`
+      variable.
 
 ------------------------------------------------------------------------------
 5.1. Windows XP support
@@ -84,7 +100,8 @@ The default codepage in the `config.system.vars` configuration file is
 (DOS codepage)
 
   >
-  _install.bat -chcp 866
+  mkdir c:\totalcmd\scripts
+  _install.bat -chcp 866 c:\totalcmd\scripts
 
 -------------------------------------------------------------------------------
 6. AUTHOR
