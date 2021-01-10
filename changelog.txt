@@ -1,10 +1,13 @@
-2021.01.09:
-* fixed: _install*.bat: Windows XP execution fixup
+2021.01.10:
+* new: _install.bat: codepage change output
 
 2021.01.09:
-* fixed: _install*.bat: Windows XP compatibility
+* fixed: _install.bat: Windows XP execution fixup
+
+2021.01.09:
+* fixed: _install.bat: Windows XP compatibility
 * fixed: __init__/__init__.bat: config generation
-* new: _install*.bat: `-chcp` flag for an arbitrary codepage request
+* new: _install.bat: `-chcp` flag for an arbitrary codepage request
 * changed: readme update
 
 2021.01.09:

@@ -76,7 +76,7 @@ call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"
 
 set RESTORE_LOCALE=0
 if defined FLAG_CHCP (
-  call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%FLAG_CHCP%%
+  call "%%CONTOOLS_ROOT%%/std/chcp.bat" -p %%FLAG_CHCP%%
   set RESTORE_LOCALE=1
 ) else for /F "usebackq eol= tokens=1,* delims=:" %%i in (`chcp.com 2^>nul`) do set "CURRENT_CP=%%j"
 
@@ -84,7 +84,7 @@ call :MAIN %%*
 set LASTERROR=%ERRORLEVEL%
 
 rem restore locale
-if %RESTORE_LOCALE% NEQ 0 call "%%CONTOOLS_ROOT%%/std/restorecp.bat"
+if %RESTORE_LOCALE% NEQ 0 call "%%CONTOOLS_ROOT%%/std/restorecp.bat" -p
 
 rem cleanup temporary files
 call "%%CONTOOLS_ROOT%%/std/free_temp_dir.bat"

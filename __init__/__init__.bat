@@ -64,7 +64,7 @@ for /F "tokens=1,* delims=." %%i in ("%RETURN_VALUE%") do (
   if defined CHCP:OSWINXP set "CHCP:OSWINXP="
 )
 
-if defined CHCP chcp %CHCP%
+if defined CHCP chcp.com %CHCP%
 
 for %%i in (PROJECT_ROOT ^
   PROJECT_LOG_ROOT PROJECT_CONFIG_ROOT PROJECT_OUTPUT_ROOT ^
