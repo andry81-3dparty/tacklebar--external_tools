@@ -1,3 +1,7 @@
+2021.01.11:
+* fixed: __init__.bat: variables load speedup
+* changed: _config: configuration files downgraded to the lite parser format
+
 2021.01.10:
 * fixed: _install.bat: Windows XP compatibility and execution fixup
 * fixed: _install.bat: direct robocopy usage in case of execution under Windows XP, replaced by the `move_dir.vbs` script

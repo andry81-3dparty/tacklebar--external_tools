@@ -86,7 +86,7 @@ set /A CONFIG_INDEX+=1
 goto LOAD_CONFIG_LOOP
 
 :LOAD_CONFIG
-call "%%CONTOOLS_ROOT%%/std/load_config.bat" -allow_not_known_class_as_var_name "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.%%CONFIG_INDEX%%.vars" && exit /b
+call "%%CONTOOLS_ROOT%%/std/load_config.bat" -lite_parse "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.%%CONFIG_INDEX%%.vars" && exit /b
 
 if %MUST_LOAD_CONFIG% NEQ 0 (
   echo.%~nx0: error: `%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%/config.%CONFIG_INDEX%.vars` is not loaded.

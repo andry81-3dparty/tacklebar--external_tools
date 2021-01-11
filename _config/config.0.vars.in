@@ -1,31 +1,7 @@
 #%% version: 1
 
-# CAUTION:
-#  This configuration file is designed to be portable between 2 interpreters: unix shell scripts, windows (cmd.exe) batch scripts,
-#  so it is made up to be simple as possible but not simplier as to support a single value or a values list
-#  together with an escape sequence, where the character `\` is not an escape sequence character.
-#  Use `$/<char>` to escape a `<char>` character which is a part of a configuration file format:
-#  `"` -> `$/"` or `$/` -> `$/$/`
-#  Use `$/{` as a start sequence for a variable's value substitution: `$/{<variable>}`, where `<variable>`
-#  is already parsed variable from configuration file WITHOUT condition(s) or `:` characters.
+NOTEPAD_PLUS_PLUS_SETUP                       ="%PROJECT_ROOT%/apps/notepad++/npp.7.9.2.Installer.exe"
 
-# FORMAT:
-#   [<attributes>] <variable>[:[<class_name>]]=<value>
-#
-# <attributes>:           Variable space separated attributes: export
-# <variable>:             Variable name corresponding to the regex: [_a-zA-Z][_a-zA-Z0-9]*
-# <class_name>:           class variant name: OSWIN | OSUNIX | BAT | SH
-#   OSWIN:                Apply on Windows system including cygwin/mingw/msys subsystems.
-#   OSUNIX:               Apply on Unix/Linux systems excluding cygwin/mingw/msys subsystems.
-#   BAT:                  Apply on Windows system when this file has loaded from the Windows batch script loader.
-#   SH:                   Apply on any system when this file has loaded from the Bash shell script loader.
-#
-# <value>:                Value with escaping and substitution support: `$/<escape_char>`, `$/{<variable>}`.
-#                         Can start by the `"` quote character, but two quotes does remove only when exist on both ends of a value.
-#
+NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP  ="%PROJECT_ROOT%/apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi"
 
-NOTEPAD_PLUS_PLUS_SETUP                       ="$/{PROJECT_ROOT}/apps/notepad++/npp.7.9.2.Installer.exe"
-
-NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP  ="$/{PROJECT_ROOT}/apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi"
-
-WINMERGE_SETUP                                ="$/{PROJECT_ROOT}/apps/winmerge/WinMerge-2.16.8-Setup.exe"
+WINMERGE_SETUP                                ="%PROJECT_ROOT%/apps/winmerge/WinMerge-2.16.8-Setup.exe"
