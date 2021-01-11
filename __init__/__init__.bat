@@ -22,8 +22,6 @@ set "LASTERROR=%ERRORLEVEL%"
 set "MUST_LOAD_CONFIG=%~1"
 if not defined MUST_LOAD_CONFIG set "MUST_LOAD_CONFIG=1"
 
-if not defined NEST_LVL set NEST_LVL=0
-
 rem basic set of system variables
 call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                      "%%~dp0.."
 

@@ -73,6 +73,8 @@ if defined FLAG (
 rem there to install
 set "INSTALL_TO_DIR=%~1"
 
+if not defined NEST_LVL set NEST_LVL=0
+
 set /A NEST_LVL+=1
 
 call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"

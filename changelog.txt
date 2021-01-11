@@ -1,4 +1,7 @@
 2021.01.11:
+* changed: code cleanup
+
+2021.01.11:
 * fixed: __init__.bat: variables load speedup
 * changed: _config: configuration files downgraded to the lite parser format
 
