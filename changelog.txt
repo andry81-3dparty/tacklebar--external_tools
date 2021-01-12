@@ -1,3 +1,6 @@
+2021.01.12:
+* fixed: _install.bat: Windows XP execution fixup
+
 2021.01.11:
 * changed: code cleanup
 
