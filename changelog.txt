@@ -1,3 +1,6 @@
+2021.01.14:
+* new: `tools/load_config.bat` script to explicit config load, detects OS type and bitness to filter out config variables by os type and bitness
+
 2021.01.12:
 * fixed: _install.bat: Windows XP execution fixup
 

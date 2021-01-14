@@ -14,3 +14,4 @@ apps/winmerge/WinMerge-2.16.8-Setup.exe -text
 /changelog.txt -text
 deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf -text
 /license.txt -text
+tools/load_config.bat -text
