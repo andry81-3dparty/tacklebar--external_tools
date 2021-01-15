@@ -1,8 +1,8 @@
 #%% version: 1
 
-PROJECT_ROOT                                  =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%
-PROJECT_LOG_ROOT                              =%PROJECT_ROOT%/.log
-PROJECT_CONFIG_ROOT                           =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%
+once PROJECT_ROOT                             =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%
+once PROJECT_LOG_ROOT                         =%PROJECT_ROOT%/.log
+once PROJECT_CONFIG_ROOT                      =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%
 
 CONTOOLS_UTILITIES_ROOT                       =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/contools/Utilities
 CONTOOLS_UTILITIES_BIN_ROOT                   =%CONTOOLS_UTILITIES_ROOT%/bin
