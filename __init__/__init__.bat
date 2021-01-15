@@ -63,7 +63,11 @@ for /F "tokens=1,* delims=." %%i in ("%RETURN_VALUE%") do (
   if defined CHCP:OSWINXP set "CHCP:OSWINXP="
 )
 
-if defined CHCP chcp.com %CHCP%
+if defined CHCP if exist "%SystemRoot%\System32\chcp.com" (
+  "%SystemRoot%\System32\chcp.com" %CHCP%
+) else (
+  echo.%~nx0: warning: `chcp.com` is not found, but the `CHCP` variable is defined: "%CHCP%".
+) >&2
 
 for %%i in (PROJECT_ROOT ^
   PROJECT_LOG_ROOT PROJECT_CONFIG_ROOT PROJECT_OUTPUT_ROOT ^

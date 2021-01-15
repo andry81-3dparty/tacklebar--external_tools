@@ -1,3 +1,6 @@
+2021.01.15:
+* changed: check the `chcp.com` existence before usage
+
 2021.01.14:
 * new: `tools/load_config.bat` script to explicit config load, detects OS type and bitness to filter out config variables by os type and bitness
 
