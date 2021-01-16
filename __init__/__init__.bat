@@ -44,24 +44,10 @@ if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%/config.system.vars.
 ) >&2
 
 rem explicitly generate `config.system.vars`
-if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%/config.system.vars" (
-  copy "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT:/=\%\config.system.vars.in" "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT:/=\%\config.system.vars" /B /Y >nul || exit /b 11
-)
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/gen_system_config.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.system.vars" || exit /b 11
 
 set CONFIG_INDEX=system
 call :LOAD_CONFIG || exit /b
-
-call "%%CONTOOLS_ROOT%%/std/get_wmic_os_version.bat"
-
-for /F "tokens=1,* delims=." %%i in ("%RETURN_VALUE%") do (
-  if "%%i" == "5" (
-    if defined CHCP:OSWINXP (
-      for /F "usebackq eol= tokens=1,* delims==" %%k in (`@set CHCP:OSWINXP 2^>nul`) do if /i "%%k" == "CHCP:OSWINXP" set CHCP=%%l
-      set "%%k="
-    )
-  )
-  if defined CHCP:OSWINXP set "CHCP:OSWINXP="
-)
 
 if defined CHCP if exist "%SystemRoot%\System32\chcp.com" (
   "%SystemRoot%\System32\chcp.com" %CHCP%
@@ -84,12 +70,12 @@ set CONFIG_INDEX=0
 
 :LOAD_CONFIG_LOOP
 if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%/config.%CONFIG_INDEX%.vars.in" goto LOAD_CONFIG_END
-call :LOAD_CONFIG || exit /b
+call :LOAD_CONFIG -gen_config || exit /b
 set /A CONFIG_INDEX+=1
 goto LOAD_CONFIG_LOOP
 
 :LOAD_CONFIG
-call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.%%CONFIG_INDEX%%.vars"
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config.bat" %%* "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" "config.%%CONFIG_INDEX%%.vars"
 exit /b
 
 if %MUST_LOAD_CONFIG% NEQ 0 (
@@ -100,6 +86,7 @@ if %MUST_LOAD_CONFIG% NEQ 0 (
 exit /b 0
 
 :LOAD_CONFIG_END
+
 rem initialize externals
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/__init__/__init__.bat" || exit /b
 
