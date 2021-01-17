@@ -79,10 +79,7 @@ set /A NEST_LVL+=1
 
 call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%"
 
-set RESTORE_LOCALE=0
-if defined FLAG_CHCP (
-  call "%%CONTOOLS_ROOT%%/std/chcp.bat" -p %%FLAG_CHCP%%
-  set RESTORE_LOCALE=1
+if defined FLAG_CHCP ( call "%%CONTOOLS_ROOT%%/std/chcp.bat" -p %%FLAG_CHCP%%
 ) else if exist "%SystemRoot%\System32\chcp.com" for /F "usebackq eol= tokens=1,* delims=:" %%i in (`@"%%SystemRoot%%\System32\chcp.com" 2^>nul`) do set "CURRENT_CP=%%j"
 if defined CURRENT_CP set "CURRENT_CP=%CURRENT_CP: =%"
 
@@ -90,19 +87,19 @@ call :MAIN %%*
 set LASTERROR=%ERRORLEVEL%
 
 rem restore locale
-if %RESTORE_LOCALE% NEQ 0 call "%%CONTOOLS_ROOT%%/std/restorecp.bat" -p
+if defined FLAG_CHCP call "%%CONTOOLS_ROOT%%/std/restorecp.bat" -p
 
 rem cleanup temporary files
 call "%%CONTOOLS_ROOT%%/std/free_temp_dir.bat"
 
 set /A NEST_LVL-=1
 
-if %NEST_LVL%0 EQU 0 call "%%CONTOOLS_ROOT%%/std/pause.bat"
+if %NEST_LVL%0 EQU 0 if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/pause.bat" -chcp "%%OEMCP%%" ) else call "%%CONTOOLS_ROOT%%/std/pause.bat"
 
 exit /b %LASTERROR%
 
 :MAIN
-rem call :CMD "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_PROJECT_ROOT%%/_install.xsh"
+rem call :CMD "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_install.xsh"
 rem exit /b
 rem 
 rem :CMD
@@ -125,11 +122,8 @@ if not defined INSTALL_TO_DIR if not defined COMMANDER_SCRIPTS_ROOT (
   exit /b 1
 ) >&2
 
-if defined INSTALL_TO_DIR (
-  call :CANONICAL_PATH INSTALL_TO_DIR "%%INSTALL_TO_DIR%%"
-) else (
-  call :CANONICAL_PATH COMMANDER_SCRIPTS_ROOT "%%COMMANDER_SCRIPTS_ROOT%%"
-)
+if defined INSTALL_TO_DIR ( call :CANONICAL_PATH INSTALL_TO_DIR "%%INSTALL_TO_DIR%%"
+) else call :CANONICAL_PATH COMMANDER_SCRIPTS_ROOT "%%COMMANDER_SCRIPTS_ROOT%%"
 
 if defined INSTALL_TO_DIR (
   if not exist "\\?\%INSTALL_TO_DIR%\" (
@@ -356,7 +350,8 @@ if not exist "\\?\%~f3" (
   ) >&2
   echo.
 )
-call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" %%*
+if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" -chcp "%%OEMCP%%" %%*
+) else call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" %%*
 exit /b
 
 :XCOPY_DIR
@@ -368,7 +363,8 @@ if not exist "\\?\%~f2" (
   ) >&2
   echo.
 )
-call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
+if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp "%%OEMCP%%" %%*
+) else  call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
 exit /b
 
 :MAKE_DIR
