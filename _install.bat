@@ -176,6 +176,7 @@ echo.Required set of 3dparty applications included into install:
 echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+, https://notepad-plus-plus.org/downloads/ )
 echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+, https://github.com/bruderstein/PythonScript )
 echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
+echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+, https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243 )
 echo.
 echo.Required set of 3dparty applications not included into install:
 echo  * ffmpeg (ffmpeg module, https://ffmpeg.org/download.html#build-windows )
@@ -207,6 +208,14 @@ goto REPEAT_INSTALL_3DPARTY_ASK
 ) >&2
 
 :CONTINUE_INSTALL_3DPARTY_ASK
+echo.
+
+for /F "usebackq tokens=* delims=" %%i in (`ver`) do set "VER_STR=%%i"
+
+echo.Installing Redistributables...
+
+call :CMD start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
+
 echo.
 
 echo.Installing Notepad++...
@@ -242,12 +251,24 @@ call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_
 
 echo.
 
+rem Fix for the Windows XP
+if "%VER_STR:Windows XP=%" == "%VER_STR%" goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
+
+echo.Fixing Notepad++ PythonScript plugin installation...
+
+call :XCOPY_FILE "%%DETECTED_NPP_INSTALL_DIR%%/plugins/PythonScript" python27.dll "%%DETECTED_NPP_INSTALL_DIR%%" /Y /D /H
+
+echo.
+
+:IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
 echo.Updating Notepad++ PythonScript plugin configuration...
 
 if not exist "%USERPROFILE%/Application Data/Notepad++\" (
   echo.%?~nx0%: error: Notepad++ user configuration directory is not found: "%USERPROFILE%/Application Data/Notepad++"
   goto INSTALL_WINMERGE
 ) >&2
+
+echo.
 
 echo.Updating "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf"...
 

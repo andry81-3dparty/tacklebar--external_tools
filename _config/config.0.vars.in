@@ -5,3 +5,5 @@ NOTEPAD_PLUS_PLUS_SETUP                       ="%PROJECT_ROOT%/apps/notepad++/np
 NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP  ="%PROJECT_ROOT%/apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi"
 
 WINMERGE_SETUP                                ="%PROJECT_ROOT%/apps/winmerge/WinMerge-2.16.8-Setup.exe"
+
+VCREDIST_2008_SETUP                           ="%PROJECT_ROOT%/apps/vcredist/2008/vcredist_x86.exe"
