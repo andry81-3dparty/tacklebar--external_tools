@@ -1,4 +1,7 @@
 2021.01.17:
+* fixed: _install.bat: handle of temporary directory allocation access deny
+
+2021.01.17:
 * changed: _install.bat: switch script to use `OEMCP` variable (has meaning under Windows XP)
 * changed: _install.bat: code cleanup
 
