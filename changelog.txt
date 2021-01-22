@@ -1,3 +1,8 @@
+2021.01.22:
+* new: _install.bat: pass not elevated environment through a file
+* changed: _install.bat: always run intallation in elevated context
+* refactor: _install: minor refactor
+
 2021.01.20:
 * fixed: _install: missed to install the Visual C++ redistributables
 * fixed: _install.bat: Notepad++ PythonScript plugin installation fix (has meaning under Windows XP)
