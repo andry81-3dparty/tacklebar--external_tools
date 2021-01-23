@@ -28,6 +28,11 @@ set "PROJECT_LOG_FILE=%PROJECT_LOG_DIR%\%LOG_FILE_NAME_SUFFIX%.%~n0.log"
 
 if not exist "%PROJECT_LOG_DIR%" ( mkdir "%PROJECT_LOG_DIR%" || exit /b )
 
+rem Workaround for the Windows 7/XP issue:
+rem 1. Windows 7: log is empty
+rem 2. Windows XP: log file name is truncated
+for /F "usebackq tokens=* delims=" %%i in (`ver`) do set "WINDOWS_VER_STR=%%i"
+
 rem Pass local environment variables to elevated process through a file
 set "ENVIRONMENT_VARS_FILE=%PROJECT_LOG_DIR%\environment.vars"
 (
@@ -36,6 +41,7 @@ set "ENVIRONMENT_VARS_FILE=%PROJECT_LOG_DIR%\environment.vars"
   echo."PROJECT_LOG_FILE=%PROJECT_LOG_FILE%"
   echo "COMMANDER_SCRIPTS_ROOT=%COMMANDER_SCRIPTS_ROOT%"
   echo "COMMANDER_INI=%COMMANDER_INI%"
+  echo "WINDOWS_VER_STR=%WINDOWS_VER_STR%"
 ) > "%ENVIRONMENT_VARS_FILE%"
 
 rem CAUTION:
@@ -48,12 +54,7 @@ rem   A partial analisis:
 rem   https://www.dostips.com/forum/viewtopic.php?p=14612#p14612
 rem
 
-rem Workaround for the Windows 7/XP issue:
-rem 1. Windows 7: log is empty
-rem 2. Windows XP: log file name is truncated
-for /F "usebackq tokens=* delims=" %%i in (`ver`) do set "VER_STR=%%i"
-
-if "%VER_STR:Windows XP=%" == "%VER_STR%" (
+if "%WINDOWS_VER_STR:Windows XP=%" == "%WINDOWS_VER_STR%" (
   "%CONTOOLS_ROOT%/ToolAdaptors/lnk/cmd_admin.lnk" /C set "IMPL_MODE=1" ^& set "ENVIRONMENT_VARS_FILE=%ENVIRONMENT_VARS_FILE%" ^& call "%?~f0%" %* 2^>^&1 ^| "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
 ) else "%CONTOOLS_ROOT%/ToolAdaptors/lnk/cmd_admin.lnk" /C set "IMPL_MODE=1" ^& set "ENVIRONMENT_VARS_FILE=%ENVIRONMENT_VARS_FILE%" ^& call "%?~f0%" %* 2>&1 | "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
 exit /b
@@ -218,6 +219,21 @@ echo. CAUTION:
 echo.   You must install at least Notepad++ (with PythonScript plugin) and WinMerge (or Araxis Merge) to continue.
 echo.
 
+rem Check Windows service pack version and warn the user
+if "%WINDOWS_VER_STR:Windows XP=%" == "%WINDOWS_VER_STR%" goto WINDOWS_SP_VERSION_OK
+
+call "%%CONTOOLS_ROOT%%/std/get_wmic_os_sp_major_version.bat"
+if not defined RETURN_VALUE goto WINDOWS_SP_VERSION_OK
+if %RETURN_VALUE% GEQ 3 goto WINDOWS_SP_VERSION_OK
+
+echo. CAUTION:
+echo.   Windows XP service pack version: %RETURN_VALUE%
+echo.   This version of Windows XP is not supported by 3dparty software declared in the list above.
+echo.   You can continue to install, but if 3dparty software will stop work you have to manually find or downgrade to an old version.
+echo.
+
+:WINDOWS_SP_VERSION_OK
+
 :REPEAT_INSTALL_3DPARTY_ASK
 set "CONTINUE_INSTALL_ASK="
 echo.Do you want to continue [y]es/[n]o?
@@ -230,8 +246,6 @@ goto REPEAT_INSTALL_3DPARTY_ASK
 
 :CONTINUE_INSTALL_3DPARTY_ASK
 echo.
-
-for /F "usebackq tokens=* delims=" %%i in (`ver`) do set "VER_STR=%%i"
 
 echo.Installing Redistributables...
 
@@ -273,7 +287,7 @@ call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_
 echo.
 
 rem Fix for the Windows XP
-if "%VER_STR:Windows XP=%" == "%VER_STR%" goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
+if "%WINDOWS_VER_STR:Windows XP=%" == "%WINDOWS_VER_STR%" goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
 
 echo.Fixing Notepad++ PythonScript plugin installation...
 

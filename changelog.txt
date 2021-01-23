@@ -1,4 +1,8 @@
 2021.01.23:
+* new: _install.bat: check minimal Windows XP service pack version and print a warning
+* changed: _install.bat: minor changes
+
+2021.01.23:
 * new: _install.bat: print minimal supported Windows version
 * changed: _install.bat: minor changes
 
