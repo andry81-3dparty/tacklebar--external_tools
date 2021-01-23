@@ -1,3 +1,7 @@
+2021.01.23:
+* new: _install.bat: print minimal supported Windows version
+* changed: _install.bat: minor changes
+
 2021.01.22:
 * new: _install.bat: pass not elevated environment through a file
 * changed: _install.bat: always run intallation in elevated context
