@@ -57,7 +57,17 @@ rem
 if "%WINDOWS_VER_STR:Windows XP=%" == "%WINDOWS_VER_STR%" (
   "%CONTOOLS_ROOT%/ToolAdaptors/lnk/cmd_admin.lnk" /C set "IMPL_MODE=1" ^& set "ENVIRONMENT_VARS_FILE=%ENVIRONMENT_VARS_FILE%" ^& call "%?~f0%" %* 2^>^&1 ^| "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
 ) else "%CONTOOLS_ROOT%/ToolAdaptors/lnk/cmd_admin.lnk" /C set "IMPL_MODE=1" ^& set "ENVIRONMENT_VARS_FILE=%ENVIRONMENT_VARS_FILE%" ^& call "%?~f0%" %* 2>&1 | "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
-exit /b
+set LASTERROR=%ERRORLEVEL%
+
+call "%%CONTOOLS_ROOT%%/registry/regquery.bat" "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" COMMANDER_SCRIPTS_ROOT >nul 2>nul
+if defined REGQUERY_VALUE set "COMMANDER_SCRIPTS_ROOT=%REGQUERY_VALUE%"
+
+rem return registered variables outside to reuse them again from the same process
+(
+  endlocal
+  set "COMMANDER_SCRIPTS_ROOT=%COMMANDER_SCRIPTS_ROOT%"
+  exit /b %LASTERROR%
+)
 
 :IMPL
 rem Check for true elevated environment (required in case of Windows XP)
@@ -159,8 +169,8 @@ if not defined INSTALL_TO_DIR if not defined COMMANDER_SCRIPTS_ROOT (
   exit /b 1
 ) >&2
 
-if defined INSTALL_TO_DIR ( call :CANONICAL_PATH INSTALL_TO_DIR "%%INSTALL_TO_DIR%%"
-) else call :CANONICAL_PATH COMMANDER_SCRIPTS_ROOT "%%COMMANDER_SCRIPTS_ROOT%%"
+if defined INSTALL_TO_DIR call :CANONICAL_PATH INSTALL_TO_DIR "%%INSTALL_TO_DIR%%"
+if defined COMMANDER_SCRIPTS_ROOT call :CANONICAL_PATH COMMANDER_SCRIPTS_ROOT "%%COMMANDER_SCRIPTS_ROOT%%"
 
 if defined INSTALL_TO_DIR (
   if not exist "\\?\%INSTALL_TO_DIR%\" (
@@ -173,6 +183,28 @@ if defined INSTALL_TO_DIR (
     exit /b 11
   ) >&2
 )
+
+if not defined INSTALL_TO_DIR goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
+if not defined COMMANDER_SCRIPTS_ROOT goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
+
+if /i not "%INSTALL_TO_DIR%" == "%COMMANDER_SCRIPTS_ROOT%" (
+  echo.*         INSTALL_TO_DIR="%INSTALL_TO_DIR%"
+  echo.* COMMANDER_SCRIPTS_ROOT="%COMMANDER_SCRIPTS_ROOT%"
+  echo.
+  echo.The `COMMANDER_SCRIPTS_ROOT` variable is defined and is different to the inputed `INSTALL_TO_DIR`.
+) >&2 else goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
+
+:REPEAT_INSTALL_TO_INSTALL_TO_DIR_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to install into different directory [y]es/[n]o?
+set /P "CONTINUE_INSTALL_ASK="
+
+if /i "%CONTINUE_INSTALL_ASK%" == "y" goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
+if /i "%CONTINUE_INSTALL_ASK%" == "n" goto CANCEL_INSTALL
+
+goto REPEAT_INSTALL_TO_INSTALL_TO_DIR_ASK
+
+:CONTINUE_INSTALL_TO_INSTALL_TO_DIR
 
 if defined INSTALL_TO_DIR goto IGNORE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
 
@@ -245,6 +277,35 @@ if /i "%CONTINUE_INSTALL_ASK%" == "n" goto CANCEL_INSTALL
 goto REPEAT_INSTALL_3DPARTY_ASK
 
 :CONTINUE_INSTALL_3DPARTY_ASK
+echo.
+
+set "COMMANDER_SCRIPTS_ROOT=%INSTALL_TO_DIR:/=\%"
+
+echo.Updated COMMANDER_SCRIPTS_ROOT variable: "%COMMANDER_SCRIPTS_ROOT%"
+
+rem installing...
+
+rem CAUTION:
+rem   The UAC promotion call must be BEFORE this point, because:
+rem   1. The UAC promotion cancel equals to cancel the installation.
+
+echo.Registering COMMANDER_SCRIPTS_ROOT variable: "%COMMANDER_SCRIPTS_ROOT%"...
+
+if exist "%SystemRoot%\System32\setx.exe" (
+  "%SystemRoot%\System32\setx.exe" /M COMMANDER_SCRIPTS_ROOT "%COMMANDER_SCRIPTS_ROOT%" || (
+    echo.%%?~nx0%%: error: could not register `COMMANDER_SCRIPTS_ROOT` variable.
+    goto CANCEL_INSTALL
+  ) >&2
+) else (
+  "%SystemRoot%\System32\reg.exe" add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v COMMANDER_SCRIPTS_ROOT /t REG_SZ /d "%COMMANDER_SCRIPTS_ROOT%" /f || (
+    echo.%%?~nx0%%: error: could not register `COMMANDER_SCRIPTS_ROOT` variable.
+    goto CANCEL_INSTALL
+  ) >&2
+
+  rem trigger WM_SETTINGCHANGE
+  "%SystemRoot%\System32\cscript.exe" //NOLOGO "%TACKLEBAR_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/post_wm_settingchange.vbs"
+)
+
 echo.
 
 echo.Installing Redistributables...
