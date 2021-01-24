@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2021.01.10
+* 2021.01.24
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -8,7 +8,8 @@
 4. REPOSITORIES
 5. INSTALLATION
 5.1. Windows XP support
-6. AUTHOR
+6. KNOWN ISSUES
+7. AUTHOR
 
 -------------------------------------------------------------------------------
 1. DESCRIPTION
@@ -103,7 +104,13 @@ The default codepage in the `config.system.vars` configuration file is
   mkdir c:\totalcmd\scripts
   _install.bat -chcp 866 c:\totalcmd\scripts
 
+------------------------------------------------------------------------------
+6. KNOWN ISSUES
+------------------------------------------------------------------------------
+
+See details in the `README_EN.txt` file of the `tacklebar` project.
+
 -------------------------------------------------------------------------------
-6. AUTHOR
+7. AUTHOR
 -------------------------------------------------------------------------------
 andry at inbox dot ru
