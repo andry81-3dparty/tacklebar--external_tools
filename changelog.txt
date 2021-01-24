@@ -1,4 +1,7 @@
 2021.01.24:
+* changed: _config: minimal Windows XP versions update
+
+2021.01.24:
 * fixed: _install.bat: Windows XP detection for the Windows XP x64 XP1 (`ver` command is found not reliable)
 * fixed: _install.bat: Notepad++ error dialog message: `Notepad++.exe - Unable To Locate Component`, `This application has failed to start because python27.dll was not found. Re-installing the application may fix this problem.`
 * fixed: _install.bat: minor fixup

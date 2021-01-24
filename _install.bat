@@ -252,7 +252,7 @@ goto REPEAT_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
 if not defined INSTALL_TO_DIR set "INSTALL_TO_DIR=%COMMANDER_SCRIPTS_ROOT%"
 
 echo.
-echo.Required Windows version: %WINDOWS_MIN_VER_STR%+
+echo.Required Windows version: %WINDOWS_X64_MIN_VER_STR%+ OR %WINDOWS_X86_MIN_VER_STR%+
 echo.
 echo.Required set of 3dparty software included into install:
 echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+, https://notepad-plus-plus.org/downloads/ )
@@ -304,6 +304,8 @@ echo.
 set "COMMANDER_SCRIPTS_ROOT=%INSTALL_TO_DIR:/=\%"
 
 echo.Updated COMMANDER_SCRIPTS_ROOT variable: "%COMMANDER_SCRIPTS_ROOT%"
+
+echo.
 
 rem installing...
 
