@@ -1,3 +1,6 @@
+2021.01.26:
+* fixed: _install.bat: `intall_system64_link.bat` script usage to fix 64-bit cmd.exe access from 32-bit process in Windows XP x64
+
 2021.01.24:
 * changed: _config: minimal Windows XP versions update
 
