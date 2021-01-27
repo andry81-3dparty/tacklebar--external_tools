@@ -52,6 +52,12 @@ if %WINDOWS_MAJOR_VER% EQU 5 if %WINDOWS_MINOR_VER% GEQ 1 goto WINDOWS_VER_OK
 
 :WINDOWS_VER_OK
 
+rem CAUTION:
+rem   Specific case for Windows XP x64 SP2, where both PROCESSOR_ARCHITECTURE and PROCESSOR_ARCHITEW6432 are equal to AMD64 for 32-bit cmd.exe process!
+rem
+set WINDOWS_X64_VER=0
+if /i not "%PROCESSOR_ARCHITECTURE%" == "x86" if not defined PROCESSOR_ARCHITEW6432 set WINDOWS_X64_VER=1
+
 rem Pass local environment variables to elevated process through a file
 set "ENVIRONMENT_VARS_FILE=%PROJECT_LOG_DIR%\environment.vars"
 (
@@ -63,6 +69,7 @@ set "ENVIRONMENT_VARS_FILE=%PROJECT_LOG_DIR%\environment.vars"
   echo "WINDOWS_VER_STR=%WINDOWS_VER_STR%"
   echo "WINDOWS_MAJOR_VER=%WINDOWS_MAJOR_VER%"
   echo "WINDOWS_MINOR_VER=%WINDOWS_MINOR_VER%"
+  echo "WINDOWS_X64_VER=%WINDOWS_X64_VER%"
 ) > "%ENVIRONMENT_VARS_FILE%"
 
 rem CAUTION:
@@ -198,7 +205,11 @@ if %WINDOWS_MAJOR_VER% GTR 5 goto WINDOWS_SP_VERSION_OK
 
 call "%%CONTOOLS_ROOT%%/std/get_wmic_os_sp_major_version.bat"
 if not defined RETURN_VALUE goto WINDOWS_SP_VERSION_OK
-if %RETURN_VALUE% GEQ 3 goto WINDOWS_SP_VERSION_OK
+
+rem Windows XP x64 SP2 or Windows XP x86 SP3
+if %WINDOWS_X64_VER% NEQ 0 (
+  if %RETURN_VALUE% GEQ 2 goto WINDOWS_SP_VERSION_OK
+) else if %RETURN_VALUE% GEQ 3 goto WINDOWS_SP_VERSION_OK
 
 echo. CAUTION:
 echo.   Windows XP service pack version: %RETURN_VALUE%
@@ -261,11 +272,8 @@ call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_
 
 echo.
 
-rem Fix for the Windows XP x86/x64 or the Windows 7 x86
-if %WINDOWS_MAJOR_VER% GTR 5 (
-  if /i "%PROCESSOR_ARCHITECTURE%" == "AMD86" goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
-  if not defined PROCESSOR_ARCHITEW6432 goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
-)
+rem Fix for the Windows XP x86/x64 or the Windows 7+ x86
+if %WINDOWS_MAJOR_VER% GTR 5 if /i %WINDOWS_X64_VER% NEQ 0 goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
 
 echo.Fixing Notepad++ PythonScript plugin installation...
 

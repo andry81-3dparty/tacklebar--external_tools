@@ -1,4 +1,7 @@
 2021.01.27:
+* fixed: _install.bat: Windows XP service pack version warning
+
+2021.01.27:
 * changed: readme update
 
 2021.01.27:
