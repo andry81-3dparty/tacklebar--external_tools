@@ -1,4 +1,7 @@
 2021.01.27:
+* changed: readme update
+
+2021.01.27:
 * fixed: _install.bat: missed changes
 * changed: _install.bat: Notepad++ PythonScript plugin tacklebar extension installation moved into `tacklebar` project to move usage of an input installation location into one project
 
