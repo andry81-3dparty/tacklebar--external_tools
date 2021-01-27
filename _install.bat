@@ -273,7 +273,7 @@ call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_
 echo.
 
 rem Fix for the Windows XP x86/x64 or the Windows 7+ x86
-if %WINDOWS_MAJOR_VER% GTR 5 if /i %WINDOWS_X64_VER% NEQ 0 goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
+if %WINDOWS_MAJOR_VER% GTR 5 if %WINDOWS_X64_VER% NEQ 0 goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
 
 echo.Fixing Notepad++ PythonScript plugin installation...
 
