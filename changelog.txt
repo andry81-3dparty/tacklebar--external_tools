@@ -1,4 +1,8 @@
 2021.01.27:
+* fixed: _install: Notepad++ `normaliz.dll` load fix under Windows XP
+* new: deploy: libcurl version 7.74.0.2 deploy libraries
+
+2021.01.27:
 * fixed: _install.bat: Windows XP service pack version warning
 
 2021.01.27:

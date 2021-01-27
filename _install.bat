@@ -259,6 +259,18 @@ if defined DETECTED_NPP_EDITOR if exist "%DETECTED_NPP_EDITOR%" goto DETECTED_NP
 
 :DETECTED_NPP_EDITOR_OK
 
+if %WINDOWS_MAJOR_VER% GTR 5 goto IGNORE_NPP_EDITOR_PATCHES
+
+echo.Applying Notepad++ patches...
+
+if not exist "%DETECTED_NPP_ROOT%/updater/libcurl.dll.bak" move "%DETECTED_NPP_ROOT%\updater\libcurl.dll" "%DETECTED_NPP_ROOT%\updater\libcurl.dll.bak" >nul
+
+call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
+
+echo.
+
+:IGNORE_NPP_EDITOR_PATCHES
+
 echo.Installing Notepad++ PythonScript plugin...
 
 rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether

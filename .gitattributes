@@ -13,6 +13,10 @@ apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi -text
 apps/vcredist/2008/vcredist_x86.exe -text
 apps/winmerge/WinMerge-2.16.8-Setup.exe -text
 /changelog.txt -text
+deploy/libcurl/libcrypto-1_1.dll -text
+deploy/libcurl/libcurl.dll -text
+deploy/libcurl/libssl-1_1.dll -text
+deploy/libcurl/normaliz.dll -text
 /license.txt -text
 tools/gen_system_config.bat -text
 tools/load_config.bat -text
