@@ -78,27 +78,17 @@ rem
 if %WINDOWS_MAJOR_VER% GTR 5 (
   "%CONTOOLS_ROOT%/ToolAdaptors/lnk/cmd_admin.lnk" /C set "IMPL_MODE=1" ^& set "ENVIRONMENT_VARS_FILE=%ENVIRONMENT_VARS_FILE%" ^& call "%?~f0%" %* 2^>^&1 ^| "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
 ) else "%CONTOOLS_ROOT%/ToolAdaptors/lnk/cmd_admin.lnk" /C set "IMPL_MODE=1" ^& set "ENVIRONMENT_VARS_FILE=%ENVIRONMENT_VARS_FILE%" ^& call "%?~f0%" %* 2>&1 | "%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe" /E "%PROJECT_LOG_FILE:/=\%"
-set LASTERROR=%ERRORLEVEL%
-
-call "%%CONTOOLS_ROOT%%/registry/regquery.bat" "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" COMMANDER_SCRIPTS_ROOT >nul 2>nul
-if defined REGQUERY_VALUE set "COMMANDER_SCRIPTS_ROOT=%REGQUERY_VALUE%"
-
-rem return registered variables outside to reuse them again from the same process
-(
-  endlocal
-  set "COMMANDER_SCRIPTS_ROOT=%COMMANDER_SCRIPTS_ROOT%"
-  exit /b %LASTERROR%
-)
+exit /b
 
 :IMPL
-rem Check for true elevated environment (required in case of Windows XP)
+rem check for true elevated environment (required in case of Windows XP)
 "%SystemRoot%\System32\net.exe" session >nul 2>nul || (
   echo.%?~nx0%: error: the script process is not properly elevated up to Administrator privileges.
   set LASTERROR=255
   goto EXIT
 ) >&2
 
-rem Load local environment variables
+rem load local environment variables
 for /F "usebackq eol=# tokens=* delims=" %%i in ("%ENVIRONMENT_VARS_FILE%") do set %%i
 
 rem script flags
@@ -127,9 +117,6 @@ if defined FLAG (
   goto FLAGS_LOOP
 )
 
-rem there to install
-set "INSTALL_TO_DIR=%~1"
-
 if not defined NEST_LVL set NEST_LVL=0
 
 set /A NEST_LVL+=1
@@ -145,8 +132,7 @@ rem   We have to change the codepage here because the change would be revoked up
 rem
 
 if defined FLAG_CHCP ( call "%%CONTOOLS_ROOT%%/std/chcp.bat" -p %%FLAG_CHCP%%
-) else if exist "%SystemRoot%\System32\chcp.com" for /F "usebackq eol= tokens=1,* delims=:" %%i in (`@"%%SystemRoot%%\System32\chcp.com" 2^>nul`) do set "CURRENT_CP=%%j"
-if defined CURRENT_CP set "CURRENT_CP=%CURRENT_CP: =%"
+) else call "%%CONTOOLS_ROOT%%/std/getcp.bat"
 
 call :MAIN %%*
 set LASTERROR=%ERRORLEVEL%
@@ -184,71 +170,6 @@ mkdir "%EMPTY_DIR_TMP%" || (
   echo.%?~n0%: error: could not create a directory: "%EMPTY_DIR_TMP%".
   exit /b 255
 ) >&2
-
-if not defined INSTALL_TO_DIR if not defined COMMANDER_SCRIPTS_ROOT (
-  echo.%?~nx0%: error: INSTALL_TO_DIR must be defined if COMMANDER_SCRIPTS_ROOT is not defined
-  exit /b 1
-) >&2
-
-if defined INSTALL_TO_DIR call :CANONICAL_PATH INSTALL_TO_DIR "%%INSTALL_TO_DIR%%"
-if defined COMMANDER_SCRIPTS_ROOT call :CANONICAL_PATH COMMANDER_SCRIPTS_ROOT "%%COMMANDER_SCRIPTS_ROOT%%"
-
-if defined INSTALL_TO_DIR (
-  if not exist "\\?\%INSTALL_TO_DIR%\" (
-    echo.%?~nx0%: error: INSTALL_TO_DIR is not a directory: "%INSTALL_TO_DIR%"
-    exit /b 10
-  ) >&2
-) else (
-  if not exist "\\?\%COMMANDER_SCRIPTS_ROOT%\" (
-    echo.%?~nx0%: error: COMMANDER_SCRIPTS_ROOT is not a directory: "%COMMANDER_SCRIPTS_ROOT%"
-    exit /b 11
-  ) >&2
-)
-
-if not defined INSTALL_TO_DIR goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
-if not defined COMMANDER_SCRIPTS_ROOT goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
-
-if /i not "%INSTALL_TO_DIR%" == "%COMMANDER_SCRIPTS_ROOT%" (
-  echo.*         INSTALL_TO_DIR="%INSTALL_TO_DIR%"
-  echo.* COMMANDER_SCRIPTS_ROOT="%COMMANDER_SCRIPTS_ROOT%"
-  echo.
-  echo.The `COMMANDER_SCRIPTS_ROOT` variable is defined and is different to the inputed `INSTALL_TO_DIR`.
-) >&2 else goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
-
-:REPEAT_INSTALL_TO_INSTALL_TO_DIR_ASK
-set "CONTINUE_INSTALL_ASK="
-echo.Do you want to install into different directory [y]es/[n]o?
-set /P "CONTINUE_INSTALL_ASK="
-
-if /i "%CONTINUE_INSTALL_ASK%" == "y" goto CONTINUE_INSTALL_TO_INSTALL_TO_DIR
-if /i "%CONTINUE_INSTALL_ASK%" == "n" goto CANCEL_INSTALL
-
-goto REPEAT_INSTALL_TO_INSTALL_TO_DIR_ASK
-
-:CONTINUE_INSTALL_TO_INSTALL_TO_DIR
-
-if defined INSTALL_TO_DIR goto IGNORE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
-
-echo.* COMMANDER_SCRIPTS_ROOT="%COMMANDER_SCRIPTS_ROOT%"
-echo.
-echo.The explicit installation directory is not defined, the installation will be proceed into directory from the `COMMANDER_SCRIPTS_ROOT` variable.
-echo.Close all scripts has been running from the previous installation directory before continue (previous installation directory will be moved and renamed).
-echo.
-
-:REPEAT_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
-set "CONTINUE_INSTALL_ASK="
-echo.Do you want to continue [y]es/[n]o?
-set /P "CONTINUE_INSTALL_ASK="
-
-if /i "%CONTINUE_INSTALL_ASK%" == "y" goto CONTINUE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT
-if /i "%CONTINUE_INSTALL_ASK%" == "n" goto CANCEL_INSTALL
-
-goto REPEAT_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
-
-:IGNORE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT_ASK
-:CONTINUE_INSTALL_TO_COMMANDER_SCRIPTS_ROOT
-
-if not defined INSTALL_TO_DIR set "INSTALL_TO_DIR=%COMMANDER_SCRIPTS_ROOT%"
 
 echo.
 echo.Required Windows version: %WINDOWS_X64_MIN_VER_STR%+ OR %WINDOWS_X86_MIN_VER_STR%+
@@ -300,36 +221,7 @@ goto REPEAT_INSTALL_3DPARTY_ASK
 :CONTINUE_INSTALL_3DPARTY_ASK
 echo.
 
-set "COMMANDER_SCRIPTS_ROOT=%INSTALL_TO_DIR:/=\%"
-
-echo.Updated COMMANDER_SCRIPTS_ROOT variable: "%COMMANDER_SCRIPTS_ROOT%"
-
-echo.
-
 rem installing...
-
-rem CAUTION:
-rem   The UAC promotion call must be BEFORE this point, because:
-rem   1. The UAC promotion cancel equals to cancel the installation.
-
-echo.Registering COMMANDER_SCRIPTS_ROOT variable: "%COMMANDER_SCRIPTS_ROOT%"...
-
-if exist "%SystemRoot%\System32\setx.exe" (
-  "%SystemRoot%\System32\setx.exe" /M COMMANDER_SCRIPTS_ROOT "%COMMANDER_SCRIPTS_ROOT%" || (
-    echo.%%?~nx0%%: error: could not register `COMMANDER_SCRIPTS_ROOT` variable.
-    goto CANCEL_INSTALL
-  ) >&2
-) else (
-  "%SystemRoot%\System32\reg.exe" add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v COMMANDER_SCRIPTS_ROOT /t REG_SZ /d "%COMMANDER_SCRIPTS_ROOT%" /f || (
-    echo.%%?~nx0%%: error: could not register `COMMANDER_SCRIPTS_ROOT` variable.
-    goto CANCEL_INSTALL
-  ) >&2
-
-  rem trigger WM_SETTINGCHANGE
-  "%SystemRoot%\System32\cscript.exe" //NOLOGO "%TACKLEBAR_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/post_wm_settingchange.vbs"
-)
-
-echo.
 
 echo.Installing Redistributables...
 
@@ -382,103 +274,6 @@ call :XCOPY_FILE "%%DETECTED_NPP_INSTALL_DIR%%/plugins/PythonScript" python27.dl
 echo.
 
 :IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
-echo.Updating Notepad++ PythonScript plugin configuration...
-
-if not exist "%USERPROFILE%/Application Data/Notepad++\" (
-  echo.%?~nx0%: error: Notepad++ user configuration directory is not found: "%USERPROFILE%/Application Data/Notepad++"
-  goto INSTALL_WINMERGE
-) >&2
-
-echo.
-
-echo.Updating "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf"...
-
-if exist "%USERPROFILE%/Application Data/Notepad++/plugins/Config/PythonScriptStartup.cnf" (
-  for /F "useback eol= tokens=* delims=" %%i in ("%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%/deploy/notepad++/plugins/PythonScript/Config/PythonScriptStartup.cnf") do (
-    "%SystemRoot%\System32\findstr.exe" /R /C:"^%%i$" "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf" >nul || (
-      echo.+%%i
-      (echo.%%i) >> "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScriptStartup.cnf"
-    )
-  )
-) else (
-  call :XCOPY_FILE "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/deploy/notepad++/plugins/PythonScript/Config" PythonScriptStartup.cnf "%%USERPROFILE%%/Application Data/Notepad++/plugins/Config" /Y /D /H
-)
-
-echo.
-
-echo.Updating "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts\"...
-
-set "PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR=%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts"
-
-if not exist "\\?\%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts\" (
-  echo.^>mkdir "%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts"
-  call :MAKE_DIR "%%USERPROFILE%%\Application Data\Notepad++\plugins\Config\PythonScript\scripts"
-  echo.
-)
-
-for %%i in (tacklebar\ startup.py) do (
-  if exist "\\?\%USERPROFILE%\Application Data\Notepad++\plugins\Config\PythonScript\scripts\%%~i" goto NPP_PYTHON_SCRIPT_BACKUP
-)
-
-goto IGNORE_NPP_PYTHON_SCRIPT_BACKUP
-
-:NPP_PYTHON_SCRIPT_BACKUP
-set "NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT=%INSTALL_TO_DIR%\.notepadpp_tacklebar_prev_install"
-
-if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%" (
-  call :MAKE_DIR "%%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%%"
-  if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%" (
-    echo.%?~nx0%: error: could not create a backup file directory: "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%".
-    goto CANCEL_INSTALL
-  ) >&2
-  echo.
-)
-
-set "NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR=%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_ROOT%\notepadpp_tacklebar_prev_install_%LOG_FILE_NAME_SUFFIX%"
-
-if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%" (
-  echo.^>mkdir "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%"
-  call :MAKE_DIR "%%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%%"
-  if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%" (
-    echo.%?~nx0%: error: could not create a backup file directory: "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%".
-    echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
-    goto INSTALL_WINMERGE
-  ) >&2
-  echo.
-)
-
-if exist "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\startup.py" (
-  echo.%?~nx0%: warning: Notepad++ PythonScript plugin startup script has been already existed, will be replaced.
-) >&2
-
-for %%i in (tacklebar\ startup.py) do (
-  if exist "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%~i" (
-    echo.^>move: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%\%%i"
-    if not "%%~nxi" == "" (
-      call :MOVE_FILE "%%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%%" "%%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%%" "%%i"
-      if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%\%%i" (
-        echo.%?~nx0%: error: could not move previous installation file: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%"
-        echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
-        goto INSTALL_WINMERGE
-      ) >&2
-    ) else (
-      call :MOVE_DIR "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%\%%i"
-      if not exist "\\?\%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%" (
-        echo.%?~nx0%: error: could not move previous installation directory: "%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%\%%i" -^> "%NPP_PYTHON_SCRIPT_NEW_PREV_INSTALL_DIR%"
-        echo.%?~nx0%: warning: Notepad++ PythonScript plugin scripts installation is cancelled.
-        goto INSTALL_WINMERGE
-      ) >&2
-    )
-    echo.
-  )
-)
-
-:IGNORE_NPP_PYTHON_SCRIPT_BACKUP
-call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/Scripts/Tools/ToolAdaptors/notepadplusplus/scripts/tacklebar" "%%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%%/tacklebar" /E /Y /D
-call :XCOPY_FILE "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/Scripts/Tools/ToolAdaptors/notepadplusplus/scripts" startup.py "%%PYTHON_SCRIPT_USER_SCRIPTS_INSTALL_DIR%%" /Y /D /H
-
-:INSTALL_WINMERGE
-echo.
 
 echo.Installing WinMerge...
 
@@ -518,7 +313,7 @@ exit /b
 for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
 
 if exist "%SystemRoot%\System32\robocopy.exe" (
-  mkdir "%FILE_PATH%" 2>nul || "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul
+  mkdir "%FILE_PATH%" 2>nul || if exist "%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul )
 ) else mkdir "%FILE_PATH%" 2>nul
 exit /b
 
