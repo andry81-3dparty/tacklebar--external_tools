@@ -1,3 +1,8 @@
+2021.02.02:
+* fixed: _install: 64-bit registry access from 32-bit process
+* fixed: _install: `WINDOWS_X64_VER` must be set on 64-bit OS, not a process
+* new: _install: `PROC_X64_VER` sets on 64-bit process
+
 2021.02.01:
 * new: _install.bat: environment variables dump into log directory
 
