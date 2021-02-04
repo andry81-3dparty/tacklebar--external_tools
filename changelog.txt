@@ -1,3 +1,8 @@
+2021.02.04:
+* new: _install: terminal console window parameters automatic update (font, screen buffer size, etc)
+* changed: _install.bat: all scripts moved to use `wmi` directory to access wmi instead of `std`
+* changed: ._install: __init__.bat: missed change
+
 2021.02.02:
 * fixed: _install: 64-bit registry access from 32-bit process
 * fixed: _install: `WINDOWS_X64_VER` must be set on 64-bit OS, not a process
