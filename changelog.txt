@@ -1,3 +1,8 @@
+2021.02.05:
+* fixed: _install: screen buffer resize is ignored (no scrollbar)
+* fixed: _install: command line truncation under Windows XP (Windowx XP bug over shortcut files)
+* fixed: _install: other minor fixup
+
 2021.02.04:
 * new: _install: terminal console window parameters automatic update (font, screen buffer size, etc)
 * changed: _install.bat: all scripts moved to use `wmi` directory to access wmi instead of `std`
