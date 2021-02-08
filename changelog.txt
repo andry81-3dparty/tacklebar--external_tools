@@ -1,3 +1,7 @@
+2021.02.08:
+* fixed: _install: minor fixup
+* changed: _config, _install: changed minimal required Windows XP x64 from SP2 to SP1
+
 2021.02.07:
 * fixed: _install: shortcut files with UAC promotion flag completely replaced by the `winshell_call.vbs` + `call.vbs` script call to resolve multiple issues detailed in the readme file of the `tacklebar` project (see the `IMPLEMENTATION DETAILS` section)
 * changed: _install: minor improvements

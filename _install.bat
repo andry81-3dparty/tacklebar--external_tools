@@ -8,6 +8,8 @@ set "?~dp0=%~dp0"
 set "?~n0=%~n0"
 set "?~nx0=%~nx0"
 
+set TACKLEBAR_SCRIPTS_INSTALL=1
+
 call "%%~dp0__init__/__init__.bat" 0 || exit /b
 
 for %%i in (PROJECT_ROOT PROJECT_LOG_ROOT PROJECT_CONFIG_ROOT CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT) do (
@@ -61,7 +63,7 @@ if /i not "%PROCESSOR_ARCHITECTURE%" == "x86" if not defined PROCESSOR_ARCHITEW6
 
 rem register initialization environment variables
 (
-for %%i in (LOG_FILE_NAME_SUFFIX PROJECT_LOG_DIR PROJECT_LOG_FILE COMMANDER_SCRIPTS_ROOT COMMANDER_INI ^
+for %%i in (TACKLEBAR_SCRIPTS_INSTALL LOG_FILE_NAME_SUFFIX PROJECT_LOG_DIR PROJECT_LOG_FILE COMMANDER_SCRIPTS_ROOT COMMANDER_PATH COMMANDER_INI ^
             WINDOWS_VER_STR WINDOWS_MAJOR_VER WINDOWS_MINOR_VER WINDOWS_X64_VER PROC_X64_VER COMSPEC COMSPECLNK ^
             TERMINAL_SCREEN_WIDTH TERMINAL_SCREEN_HEIGHT TERMINAL_SCREEN_BUFFER_HEIGHT) do ^
 if defined %%i ( for /F "usebackq eol= tokens=1,* delims==" %%j in (`set %%i 2^>nul`) do if /i "%%i" == "%%j" echo.%%j=%%k) else echo.#%%i=
@@ -108,7 +110,7 @@ rem
 
 "%SystemRoot%\System32\wscript.exe" //NOLOGO "%CONTOOLS_ROOT%/ToolAdaptors/vbs/winshell_call.vbs" -nowindow -verb runas -make_temp_dir_as_cwd "{{CWD}}" -wait_delete_cwd ^
   "%SystemRoot%\System32\wscript.exe" //NOLOGO "%CONTOOLS_ROOT%/ToolAdaptors/vbs/call.vbs" -unesc -D "{{CWD}}" ^
-    "%COMSPEC%" /C set "%%22IMPL_MODE=1%%22" ^& set "%%22INIT_VARS_FILE=%PROJECT_LOG_DIR%\init.vars%%22" ^& ^
+    "%COMSPEC%" /C set "%%22TACKLEBAR_SCRIPTS_INSTALL=1%%22" ^& set "%%22IMPL_MODE=1%%22" ^& set "%%22INIT_VARS_FILE=%PROJECT_LOG_DIR%\init.vars%%22" ^& ^
       call "%%22%?~dp0%._install\_install.update.terminal_params.bat%%22" -update_screen_size -update_buffer_size ^& ^
       call "%%22%?~f0%%%22" %* 2^>^&1 ^| "%%22%CONTOOLS_UTILITIES_BIN_ROOT%/ritchielawrence/mtee.exe%%22" /E "%%22%PROJECT_LOG_FILE:/=\%%%22"
 set LASTERROR=%ERRORLEVEL%
@@ -215,7 +217,7 @@ echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
 echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+, https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243 )
 echo.
 echo.Required set of 3dparty software not included into install:
-echo  * ffmpeg (ffmpeg module, https://ffmpeg.org/download.html#build-windows )
+echo  * ffmpeg (ffmpeg module, https://ffmpeg.org/download.html#build-windows, https://github.com/BtbN/FFmpeg-Builds/releases )
 echo. * msys2 (coreutils package, https://www.msys2.org/#installation )
 echo. * cygwin (coreutils package, https://cygwin.com )
 echo.
@@ -235,7 +237,7 @@ if not defined RETURN_VALUE goto WINDOWS_SP_VERSION_OK
 
 rem Windows XP x64 SP2 or Windows XP x86 SP3
 if %WINDOWS_X64_VER% NEQ 0 (
-  if %RETURN_VALUE% GEQ 2 goto WINDOWS_SP_VERSION_OK
+  if %RETURN_VALUE% GEQ 1 goto WINDOWS_SP_VERSION_OK
 ) else if %RETURN_VALUE% GEQ 3 goto WINDOWS_SP_VERSION_OK
 
 echo. CAUTION:
