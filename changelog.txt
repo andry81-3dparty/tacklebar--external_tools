@@ -1,3 +1,6 @@
+2021.02.09:
+* changed: _install.bat: notes update
+
 2021.02.08:
 * fixed: _install: minor fixup
 * changed: _config, _install: changed minimal required Windows XP x64 from SP2 to SP1
