@@ -1,3 +1,6 @@
+2021.02.11:
+* changed: install.bat: ffmpeg web links
+
 2021.02.09:
 * changed: _install.bat: notes update
 
