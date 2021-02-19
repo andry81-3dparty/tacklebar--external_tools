@@ -1,3 +1,6 @@
+2021.02.20:
+* fixed: _install: execution fixup
+
 2021.02.11:
 * changed: install.bat: ffmpeg web links
 
