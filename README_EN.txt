@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2021.01.27
+* 2021.02.20
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -48,8 +48,8 @@ Second mirror:
 ------------------------------------------------------------------------------
 
 NOTE:
-  The installation does not required particulary an installation directory
-  because the script does installation into 3dparty installation directories.
+  The installation does not require an installation directory because the
+  script does installation of 3rd party applications
 
 >
 _install.bat
@@ -58,8 +58,9 @@ _install.bat
 4.1. Windows XP support
 ------------------------------------------------------------------------------
 
-The default codepage in the `config.system.vars` configuration file is
-`1251` (Windows codepage). You can change it:
+For the Windows XP the initial codepage in the `config.system.vars`
+configuration file is taken from the registry on the moment of the
+installation. You can change it:
 
 (DOS codepage)
 

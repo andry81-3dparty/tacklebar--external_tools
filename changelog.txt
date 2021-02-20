@@ -1,4 +1,7 @@
 2021.02.20:
+* changed: readme update
+
+2021.02.20:
 * fixed: _install: execution fixup
 
 2021.02.11:
