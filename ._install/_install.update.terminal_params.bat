@@ -168,7 +168,7 @@ if %WINDOWS_X64_VER%0 NEQ 0 (
 ) else set "System6432=%SystemRoot%\System32"
 
 for /F "usebackq eol= tokens=1,2,3 delims=|" %%i in (`@"%System6432%\cscript.exe" //NOLOGO ^
-  "%TACKLEBAR_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/read_reg_hkeys_as_list.vbs" -posparam "0,1" "TerminalVector" -posparam "2,3" "TerminalVector (TrueType)" ^
+  "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/read_reg_hkeys_as_list.vbs" -posparam "0,1" "TerminalVector" -posparam "2,3" "TerminalVector (TrueType)" ^
   "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFont" "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Console\TrueTypeFont" ^
   "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts" "HKLM\SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion\Fonts"`) do (
   set "PARAM_NAME=%%j"
@@ -199,7 +199,7 @@ if /i "%TERMINAL_FONT_NAME%" == "TerminalVector" (
 
 if %WINDOWS_X64_VER%0 NEQ 0 (
   for /F "usebackq eol= tokens=1,2,3 delims=|" %%i in (`@"%System6432%\cscript.exe" //NOLOGO ^
-    "%TACKLEBAR_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/read_reg_hkeys_as_list.vbs" -param_per_line -param "FaceName" -param "ScreenBufferSize" -u ^
+    "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/read_reg_hkeys_as_list.vbs" -param_per_line -param "FaceName" -param "ScreenBufferSize" -u ^
     "HKCU\Console" ^
     "HKCU\Console\%%25SystemRoot%%25_System32_cmd.exe" ^
     "HKCU\Console\%%25SystemRoot%%25_System64_cmd.exe" ^
@@ -212,7 +212,7 @@ if %WINDOWS_X64_VER%0 NEQ 0 (
     call :UPDATE_CONSOLE_REGISTRY_PARAMS
   )
 ) else for /F "usebackq eol= tokens=1,2,3 delims=|" %%i in (`@"%System6432%\cscript.exe" //NOLOGO ^
-  "%TACKLEBAR_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/read_reg_hkeys_as_list.vbs" -param_per_line -param "FaceName" -param "ScreenBufferSize" -u ^
+  "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/registry/read_reg_hkeys_as_list.vbs" -param_per_line -param "FaceName" -param "ScreenBufferSize" -u ^
   "HKCU\Console" ^
   "HKCU\Console\%%25SystemRoot%%25_System32_cmd.exe" ^
   "HKCU\Console\ConEmu"`) do (

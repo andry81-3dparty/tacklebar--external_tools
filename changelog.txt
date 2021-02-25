@@ -1,3 +1,9 @@
+2021.02.25:
+* fixed: _install.bat: pause after initialization error
+* fixed: __init__: missed change
+* fixed: _install: accidental change
+* new: _install.bat: update registry parameters for font change (back merge from `tacklebar` project)
+
 2021.02.24:
 * fixed: _install: UAC promotion cancel detection under Windows 7+
 * fixed: _install: TerminalVector correct installation detection
