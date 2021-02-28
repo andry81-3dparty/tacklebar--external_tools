@@ -1,3 +1,7 @@
+2021.02.28:
+* changed: _install.bat: minor fixup
+* changed: readme update
+
 2021.02.25:
 * fixed: _install.bat: pause after initialization error
 * fixed: __init__: missed change
