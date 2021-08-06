@@ -1,3 +1,6 @@
+2021.08.06:
+* new: .github/images: sourceforge download button image
+
 2021.07.21:
 * new: _install: now console window is reused even after the Administrator privileges elevation
 * changed: _install: replaced usage of `winshell_call.vbs` and `call.vbs` scripts by the `callf.exe` executable with less issues and better functionality
