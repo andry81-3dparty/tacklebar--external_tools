@@ -3,7 +3,9 @@
 ._install/_install.detect_3dparty.notepadpp.bat -text
 ._install/_install.update.terminal_params.bat -text
 .github/FUNDING.yml -text
+.github/icons/notepad++-16x16.png -text
 .github/icons/notepad++.ico -text
+.github/icons/winmerge-16x16.png -text
 .github/icons/winmerge.ico -text
 /README.md -text
 /README_EN.txt -text

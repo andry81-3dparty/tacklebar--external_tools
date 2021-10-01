@@ -2,9 +2,9 @@
 
 ### External application tools:
   
-* <a href="https://github.com/notepad-plus-plus/notepad-plus-plus"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/notepad++.ico" valign="middle" alt="notepad++" width="16px" height="16px" />&nbsp;Notepad++</a>
-* <a href="https://github.com/bruderstein/PythonScript"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/notepad++.ico" valign="middle" alt="notepad++ PythonScript plugin" width="16px" height="16px" />&nbsp;Notepad++ PythonScript plugin</a>
-* <a href="https://github.com/WinMerge/winmerge"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/winmerge.ico" valign="middle" alt="winmerge" width="16px" height="16px" />&nbsp;WinMerge</a>
+* <a href="https://github.com/notepad-plus-plus/notepad-plus-plus"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/notepad++-16x16.png" valign="middle" alt="notepad++" />&nbsp;Notepad++</a>
+* <a href="https://github.com/bruderstein/PythonScript"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/notepad++-16x16.png" valign="middle" alt="notepad++ PythonScript plugin" />&nbsp;Notepad++ PythonScript plugin</a>
+* <a href="https://github.com/WinMerge/winmerge"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/winmerge-16x16.png" valign="middle" alt="winmerge" />&nbsp;WinMerge</a>
 
 <h4 align="center">
 The latest version is here: https://sf.net/p/tacklebar</h4>
