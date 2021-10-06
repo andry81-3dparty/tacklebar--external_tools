@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2021.02.20
+* 2021.10.02
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -76,4 +76,4 @@ See details in the `README_EN.txt` file of the `tacklebar` project.
 -------------------------------------------------------------------------------
 6. AUTHOR
 -------------------------------------------------------------------------------
-andry at inbox dot ru
+Andrey Dibrov (andry at inbox dot ru)

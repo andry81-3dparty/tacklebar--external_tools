@@ -1,12 +1,5 @@
 #%% version: 1
 
-once PROJECT_ROOT                             =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%
-once PROJECT_LOG_ROOT                         =%PROJECT_ROOT%/.log
-once PROJECT_CONFIG_ROOT                      =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_CONFIG_ROOT%
-
-CONTOOLS_UTILITIES_ROOT                       =%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/contools/Utilities
-CONTOOLS_UTILITIES_BIN_ROOT                   =%CONTOOLS_UTILITIES_ROOT%/bin
-
 WINDOWS_X86_MIN_VER_STR                       =Windows XP x86 SP3
 WINDOWS_X64_MIN_VER_STR                       =Windows XP x64 SP1
 

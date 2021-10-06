@@ -10,6 +10,7 @@
 /README.md -text
 /README_EN.txt -text
 __init__/__init__.bat -text
+__init__/declare_builtins.bat -text
 _config/config.0.vars.in -text
 _config/config.system.vars.in -text
 /_install.bat -text
@@ -24,4 +25,4 @@ deploy/libcurl/libssl-1_1.dll -text
 deploy/libcurl/normaliz.dll -text
 /license.txt -text
 tools/gen_system_config.bat -text
-tools/load_config.bat -text
+tools/load_config_dir.bat -text

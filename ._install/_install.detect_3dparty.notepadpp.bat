@@ -2,11 +2,9 @@
 
 setlocal
 
-set "?~dp0=%~dp0"
-set "?~n0=%~n0"
-set "?~nx0=%~nx0"
+call "%%~dp0__init__.bat" || exit /b
 
-call "%%?~dp0%%__init__.bat" || exit /b
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%*
 
 for %%i in (PROJECT_ROOT) do (
   if not defined %%i (

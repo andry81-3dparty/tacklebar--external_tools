@@ -134,10 +134,26 @@
 	fetch = :refs/remotes/git-svn
 	remote = svn
 	type = dir
+[submodule "_externals/contools/_config"]
+	path = _externals/contools/_config
+	owner = _externals
+	url = svn://svn.code.sf.net/p/contools/contools/trunk/_config
+	branch = /
+	fetch = :refs/remotes/git-svn
+	remote = svn
+	type = dir
 [submodule "_externals/tacklelib/__init__"]
 	path = _externals/tacklelib/__init__
 	owner = _externals
 	url = svn://svn.code.sf.net/p/tacklelib/tacklelib/trunk/__init__
+	branch = /
+	fetch = :refs/remotes/git-svn
+	remote = svn
+	type = dir
+[submodule "_externals/tacklelib/_config"]
+	path = _externals/tacklelib/_config
+	owner = _externals
+	url = svn://svn.code.sf.net/p/tacklelib/tacklelib/trunk/_config
 	branch = /
 	fetch = :refs/remotes/git-svn
 	remote = svn
