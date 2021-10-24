@@ -1,4 +1,7 @@
 2021.10.24:
+* new: .github/res/Release.md.in: commits since tagged version badge
+
+2021.10.24:
 * new: .github/res: `Release.md.in` template
 * new: README.md: `shields.io` all downloads counter link badge
 * new: README.md: `sourceforge.net` download counter link badge
