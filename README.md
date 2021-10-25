@@ -13,7 +13,7 @@ The latest version is here: https://sf.net/p/tacklebar</h4>
 
 <p align="center">
   <a href="https://github.com/andry81/tacklebar--external_tools/releases"><img src="https://img.shields.io/github/downloads/andry81/tacklebar--external_tools/total?label=Github%20dl" valign="middle" alt="GitHub all releases" /></a>
-• <a href="https://sourceforge.net/projects/tacklebar/files/"><img src="https://img.shields.io/sourceforge/dt/tacklebar?label=Sourceforge%20dl" valign="middle" alt="Sourceforge all downloads" /></a>
+• <a href="https://sourceforge.net/projects/tacklebar/files/tacklebar--external_tools/"><img src="https://img.shields.io/sourceforge/dt/tacklebar/tacklebar--external_tools?label=Sourceforge%20dl" valign="middle" alt="Sourceforge tacklebar--external_tools downloads" /></a>
 </p>
 
 <p align="center">
