@@ -1,4 +1,7 @@
 2021.10.27:
+* changed: README.md: sync with `tacklebar/README.md`
+
+2021.10.27:
 * new: .github/workflows: `tacklebar-gh-clone-stats.yml` to generate `tacklebar--external_tools` repo clone stats
 
 2021.10.25:
