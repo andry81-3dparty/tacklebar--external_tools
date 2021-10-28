@@ -19,6 +19,11 @@
 * new: README.md: `sourceforge.net` download counter link badge
 * new: README.md: hits counter badge
 
+2021.10.20:
+* fixed: _install: restored terminal screen/buffer size update before the elevation to workaround `ConSetBuffer.exe` utility issue (console buffer size change fail under elevated environment)
+* changed: __init__: `chcp.com` usage replaced by `chcp.bat` script
+* changed: __init__: use `INIT_VERBOSE` variable to initialize `LOAD_CONFIG_VERBOSE` variable
+
 2021.10.06:
 * fixed: code multiple fixup
 * new: __init__: `declare_builtins.bat` to declare builtin variables

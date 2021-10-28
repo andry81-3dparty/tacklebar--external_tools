@@ -47,17 +47,17 @@ if %COMSPEC_X64_VER%0 NEQ 0 set "EXPAND_PARAM1="
 
 if %__?GEN_SYSTEM_CONFIG% NEQ 0 (
   rem explicitly generate `config.system.vars`
-  call "%%TACKLEBAR_PROJECT_ROOT%%/tools/gen_system_config.bat" %%1 %%2 "config.system.vars" || exit /b
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/gen_system_config.bat" %%1 %%2 "config.system.vars" || exit /b
 )
 
-if %__?GEN_SYSTEM_CONFIG% EQU 0 goto GEN_USER_CONFIG_END
+if %__?GEN_USER_CONFIG% EQU 0 goto GEN_USER_CONFIG_END
 
 rem explicitly generate `config.<N>.vars`
 set CONFIG_INDEX=0
 
 :LOAD_CONFIG_LOOP
 if not exist "%%~1/config.%CONFIG_INDEX%.vars.in" goto GEN_USER_CONFIG_END
-call "%%TACKLEBAR_PROJECT_ROOT%%/tools/gen_user_config.bat" %%1 %%2 "config.%%CONFIG_INDEX%%.vars" || exit /b
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/gen_user_config.bat" %%1 %%2 "config.%%CONFIG_INDEX%%.vars" || exit /b
 set /A CONFIG_INDEX+=1
 goto LOAD_CONFIG_LOOP
 

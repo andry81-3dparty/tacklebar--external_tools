@@ -6,13 +6,6 @@ call "%%~dp0__init__.bat" || exit /b
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%*
 
-for %%i in (PROJECT_ROOT) do (
-  if not defined %%i (
-    echo.%~nx0: error: `%%i` variable is not defined.
-    exit /b 255
-  ) >&2
-)
-
 set "DETECTED_NPP_ROOT="
 set "DETECTED_NPP_EDITOR="
 

@@ -39,15 +39,11 @@ if defined FLAG (
 
 call "%%?~dp0%%__init__.bat" || exit /b
 
-for %%i in (PROJECT_ROOT CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT) do (
+for %%i in (CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT) do (
   if not defined %%i (
     echo.%~nx0: error: `%%i` variable is not defined.
     exit /b 255
   ) >&2
-)
-
-if %FLAG_UPDATE_SCREEN_SIZE%%FLAG_UPDATE_BUFFER_SIZE%%FLAG_UPDATE_REGISTRY% NEQ 0 (
-  echo.Updating terminal screen/buffer size and font...
 )
 
 rem drop last error level
@@ -115,12 +111,16 @@ if %DISPLAY_WIDTH% GEQ 1024 if %DISPLAY_HEIGHT% GEQ 768 (
 
 if %FLAG_UPDATE_SCREEN_SIZE% EQU 0 goto UPDATE_SCREEN_SIZE_END
 
+echo.Updating terminal screen size...
+
 rem apply terminal window size before registry write
 mode con: cols=%TERMINAL_SCREEN_WIDTH% lines=%TERMINAL_SCREEN_HEIGHT%
 
 :UPDATE_SCREEN_SIZE_END
 
 if %FLAG_UPDATE_BUFFER_SIZE% EQU 0 goto UPDATE_BUFFER_SIZE_END
+
+echo.Updating terminal buffer size...
 
 "%CONTOOLS_UTILITIES_BIN_ROOT%/ss64.net/conutils/ConSetBuffer.exe" "/X=%TERMINAL_SCREEN_WIDTH%" "/Y=%TERMINAL_SCREEN_BUFFER_HEIGHT%"
 
@@ -145,6 +145,8 @@ if %WINDOWS_MAJOR_VER% EQU 5 (
     goto UPDATE_CONSOLE_REGISTRY_PARAMS_END
   ) >&2
 )
+
+echo.Updating terminal font...
 
 set "TERMINAL_FONT_NAME=Lucida Console"
 

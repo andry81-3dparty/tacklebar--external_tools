@@ -27,6 +27,7 @@ rem Windows XP is minimal
 call "%%CONTOOLS_ROOT%%/std/check_windows_version.bat" 5 1 || exit /b
 
 if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%\" ( mkdir "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%" || exit /b 10 )
+if not defined LOAD_CONFIG_VERBOSE if %INIT_VERBOSE%0 NEQ 0 set LOAD_CONFIG_VERBOSE=1
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -gen_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
 
@@ -52,13 +53,7 @@ echo.
 
 :IGNORE_MKLINK_SYSTEM64
 
-if defined CHCP if exist "%SystemRoot%\System32\chcp.com" (
-  "%SystemRoot%\System32\chcp.com" %CHCP%
-) else if exist "%SystemRoot%\System64\chcp.com" (
-  "%SystemRoot%\System64\chcp.com" %CHCP%
-) else (
-  echo.%~nx0: warning: `chcp.com` is not found, but the `CHCP` variable is defined: "%CHCP%".
-) >&2
+if defined CHCP call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%CHCP%%
 
 exit /b 0
 
