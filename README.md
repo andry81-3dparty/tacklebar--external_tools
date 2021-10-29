@@ -14,8 +14,11 @@ The latest version is here: https://sf.net/p/tacklebar</h4>
 <p align="center">
   <a href="#"><img src="https://img.shields.io/badge/dynamic/json?color=success&label=Github%20clones|all&query=count&url=https://github.com/andry81/tacklebar--external_tools--gh-stats/raw/master/traffic/clones-accum.json?raw=True&logo=github" valign="middle" alt="GitHub clones|all" /></a>
 • <a href="#"><img src="https://img.shields.io/badge/dynamic/json?color=success&label=Github%20clones|unq&query=uniques&url=https://github.com/andry81/tacklebar--external_tools--gh-stats/raw/master/traffic/clones-accum.json?raw=True&logo=github" valign="middle" alt="GitHub clones|unique per day" /></a>
-• <a href="https://github.com/andry81/tacklebar--external_tools/releases"><img src="https://img.shields.io/github/downloads/andry81/tacklebar--external_tools/total?label=Github%20dl&logo=github" valign="middle" alt="GitHub all releases" /></a>
-• <a href="https://sourceforge.net/projects/tacklebar/files/tacklebar--external_tools/"><img src="https://img.shields.io/sourceforge/dt/tacklebar/tacklebar--external_tools?label=Sourceforge%20dl&logo=sourceforge" valign="middle" alt="Sourceforge tacklebar--external_tools downloads" /></a>
+• <a href="https://github.com/andry81/tacklebar--external_tools/releases">
+    <img src="https://img.shields.io/github/downloads/andry81/tacklebar--external_tools/total?label=Github%20dl|all&logo=github" valign="middle" alt="GitHub all releases" />
+    <img src="https://img.shields.io/github/v/release/andry81/tacklebar--external_tools?include_prereleases" valign="middle" alt="latest release name" />
+  </a>
+• <a href="https://sourceforge.net/projects/tacklebar/files/tacklebar--external_tools/"><img src="https://img.shields.io/sourceforge/dt/tacklebar/tacklebar--external_tools?label=Sourceforge%20dl|all&logo=sourceforge" valign="middle" alt="Sourceforge all downloads" /></a>
 • <a href="http://totalcmd.net/plugring/tacklebar.html"><img src="https://img.shields.io/badge/dynamic/json?color=success&label=totalcmd.net%20dl&query=downloads&url=https://github.com/andry81/tacklebar--totalcmd-stats/raw/master/traffic/totalcmd_dl.json?raw=True" valign="middle" alt="totalcmd.net tacklebar downloads" /></a>
 </p>
 
