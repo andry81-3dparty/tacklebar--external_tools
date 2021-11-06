@@ -17,6 +17,12 @@ The latest version is here: https://sf.net/p/tacklebar</h4>
 </p>
 
 <p align="center">
+  <a href="#"><img src="https://img.shields.io/github/repo-size/andry81/tacklebar--external_tools" valign="middle" alt="GitHub repo size in bytes" /></a>
+• <a href="#"><img src="https://img.shields.io/github/languages/code-size/andry81/tacklebar--external_tools" valign="middle" alt="code size in bytes" /></a>
+• <a href="https://github.com/XAMPPRocky/tokei"><img src="https://tokei.rs/b1/github/andry81/tacklebar--external_tools?category=code" valign="middle" alt="lines of code by tokei.rs" /></a>
+</p>
+
+<p align="center">
   <a href="https://github.com/andry81/tacklebar--external_tools/commits">
     <img src="https://img.shields.io/github/commits-since/andry81/tacklebar--external_tools/latest?sort=semver&label=Github%20commits%20since%20latest" valign="middle" alt="GitHub commits since latest version" /></a>
   <a href="https://github.com/andry81/tacklebar--external_tools/releases">
