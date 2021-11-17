@@ -1,3 +1,7 @@
+2021.11.17:
+* fixed: _config: external project externals retarget
+* changed: _install: minor changes
+
 2021.11.07:
 * changed: .github/workflows/tacklebar-gh-clone-stats.yml: print warning/error into github workflow from the inner script
 
