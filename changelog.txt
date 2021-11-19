@@ -1,3 +1,6 @@
+2021.11.19:
+* changed: .github/workflows: added reference to the `github-clone-count-badge` repo
+
 2021.11.17:
 * fixed: _config: external project externals retarget
 * changed: _install: minor changes
