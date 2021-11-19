@@ -9,6 +9,7 @@
 .github/icons/winmerge.ico -text
 .github/res/Release.md.in -text
 .github/workflows/tacklebar-gh-clone-stats.yml -text
+.github/workflows/tacklebar-gh-view-stats.yml -text
 /README.md -text
 /README_EN.txt -text
 __init__/__init__.bat -text
