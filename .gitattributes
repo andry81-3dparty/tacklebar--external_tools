@@ -8,8 +8,6 @@
 .github/icons/winmerge-16x16.png -text
 .github/icons/winmerge.ico -text
 .github/res/Release.md.in -text
-.github/workflows/accum-gh-clone-stats.yml -text
-.github/workflows/accum-gh-view-stats.yml -text
 /README.md -text
 /README_EN.txt -text
 __init__/__init__.bat -text
