@@ -30,6 +30,14 @@
 	fetch = :refs/remotes/git-svn
 	remote = svn
 	type = dir
+[submodule "_externals/contools/Scripts/Tools/build"]
+	path = _externals/contools/Scripts/Tools/build
+	owner = _externals
+	url = svn://svn.code.sf.net/p/contools/contools/trunk/Scripts/Tools/build
+	branch = /
+	fetch = :refs/remotes/git-svn
+	remote = svn
+	type = dir
 [submodule "_externals/contools/Scripts/Tools/encoding"]
 	path = _externals/contools/Scripts/Tools/encoding
 	owner = _externals
@@ -90,14 +98,6 @@
 	path = _externals/contools/Utilities/bin/contools
 	owner = _externals
 	url = svn://svn.code.sf.net/p/contools/contools/trunk/Utilities/bin/contools
-	branch = /
-	fetch = :refs/remotes/git-svn
-	remote = svn
-	type = dir
-[submodule "_externals/contools/Utilities/bin/ritchielawrence"]
-	path = _externals/contools/Utilities/bin/ritchielawrence
-	owner = _externals
-	url = svn://svn.code.sf.net/p/contools/contools/trunk/Utilities/bin/ritchielawrence
 	branch = /
 	fetch = :refs/remotes/git-svn
 	remote = svn
