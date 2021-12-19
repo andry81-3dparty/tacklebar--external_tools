@@ -33,7 +33,7 @@ call "%%CONTOOLS_ROOT%%/std/check_windows_version.bat" 5 1 || exit /b
 if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%\" ( mkdir "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%" || exit /b 10 )
 if not defined LOAD_CONFIG_VERBOSE if %INIT_VERBOSE%0 NEQ 0 set LOAD_CONFIG_VERBOSE=1
 
-call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -gen_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite_parse -gen_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
 
 rem init external projects
 
