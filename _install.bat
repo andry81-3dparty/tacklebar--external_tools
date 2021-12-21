@@ -92,8 +92,9 @@ set "COMSPECLNK=%COMSPEC:{=\{%"
   /v IMPL_MODE 1 /v INIT_VARS_FILE "%INIT_VARS_FILE%" ^
   /ra "%%" "%%?01%%" /v "?01" "%%" ^
   "%COMSPECLNK%" "/c \"@\"%?~dp0%._install\_install.update.terminal_params.bat\" -update_registry ^& @\"%?~f0%\" {*}\"" %*
+set LASTERROR=%ERRORLEVEL%
 
-exit /b 0
+exit /b %LASTERROR%
 
 :IMPL
 rem check for true elevated environment (required in case of Windows XP)

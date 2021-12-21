@@ -6,23 +6,23 @@ set "TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT_INIT0_DIR=%~dp0"
 
 if not defined NEST_LVL set NEST_LVL=0
 
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                "%%~dp0.."
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
+if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                "%%~dp0.."
+if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
 
-if not defined PROJECT_OUTPUT_ROOT                                  call :CANONICAL_PATH PROJECT_OUTPUT_ROOT                                  "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_out"
-if not defined PROJECT_LOG_ROOT                                     call :CANONICAL_PATH PROJECT_LOG_ROOT                                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/.log"
+if not defined PROJECT_OUTPUT_ROOT                                  call "%%~dp0canonical_path.bat" PROJECT_OUTPUT_ROOT                                  "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_out"
+if not defined PROJECT_LOG_ROOT                                     call "%%~dp0canonical_path.bat" PROJECT_LOG_ROOT                                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/.log"
 
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_config"
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  call :CANONICAL_PATH TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  "%%PROJECT_OUTPUT_ROOT%%/config/tacklebar"
+if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_config"
+if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  "%%PROJECT_OUTPUT_ROOT%%/config/tacklebar"
 
 rem retarget externals of an external project
 
-if not defined CONTOOLS_PROJECT_EXTERNALS_ROOT                      call :CANONICAL_PATH CONTOOLS_PROJECT_EXTERNALS_ROOT                      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
+if not defined CONTOOLS_PROJECT_EXTERNALS_ROOT                      call "%%~dp0canonical_path.bat" CONTOOLS_PROJECT_EXTERNALS_ROOT                      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
 
 rem init immediate external projects
 
 if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/contools/__init__/__init__.bat" (
-  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/__init__/__init__.bat" || exit /b
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/__init__/__init__.bat" -no_load_user_config || exit /b
 )
 
 call "%%CONTOOLS_ROOT%%/std/get_windows_version.bat" || exit /b
@@ -38,7 +38,7 @@ call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite
 rem init external projects
 
 if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/__init__/__init__.bat" (
-  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklelib/__init__/__init__.bat" || exit /b
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklelib/__init__/__init__.bat" -no_load_user_config || exit /b
 )
 
 if not exist "%PROJECT_OUTPUT_ROOT%\" ( mkdir "%PROJECT_OUTPUT_ROOT%" || exit /b 11 )
@@ -59,14 +59,4 @@ echo.
 
 if defined CHCP call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%CHCP%%
 
-exit /b 0
-
-:CANONICAL_PATH
-setlocal DISABLEDELAYEDEXPANSION
-for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "RETURN_VALUE=%%~fi"
-rem set "RETURN_VALUE=%RETURN_VALUE:\=/%"
-(
-  endlocal
-  set "%~1=%RETURN_VALUE%"
-)
 exit /b 0
