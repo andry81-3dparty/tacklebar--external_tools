@@ -3,10 +3,6 @@
 ._install/_install.detect_3dparty.notepadpp.bat -text
 ._install/_install.update.terminal_params.bat -text
 .github/FUNDING.yml -text
-.github/icons/notepad++-16x16.png -text
-.github/icons/notepad++.ico -text
-.github/icons/winmerge-16x16.png -text
-.github/icons/winmerge.ico -text
 .github/res/Release.md.in -text
 /README.md -text
 /README_EN.txt -text
@@ -26,5 +22,9 @@ deploy/libcurl/libcurl.dll -text
 deploy/libcurl/libssl-1_1.dll -text
 deploy/libcurl/normaliz.dll -text
 /license.txt -text
+res/images/notepad++-16x16.png -text
+res/images/notepad++.ico -text
+res/images/winmerge-16x16.png -text
+res/images/winmerge.ico -text
 tools/gen_system_config.bat -text
 tools/load_config_dir.bat -text

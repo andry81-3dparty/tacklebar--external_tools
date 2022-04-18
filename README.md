@@ -2,14 +2,20 @@
 
 ### External application tools:
   
-* <a href="https://github.com/notepad-plus-plus/notepad-plus-plus"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/notepad++-16x16.png" valign="middle" alt="notepad++" />&nbsp;Notepad++</a>
-* <a href="https://github.com/bruderstein/PythonScript"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/notepad++-16x16.png" valign="middle" alt="notepad++ PythonScript plugin" />&nbsp;Notepad++ PythonScript plugin</a>
-* <a href="https://github.com/WinMerge/winmerge"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/.github/icons/winmerge-16x16.png" valign="middle" alt="winmerge" />&nbsp;WinMerge</a>
+* <a href="https://github.com/notepad-plus-plus/notepad-plus-plus"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/res/images/notepad++-16x16.png" valign="middle" alt="notepad++" />&nbsp;Notepad++</a>
+* <a href="https://github.com/bruderstein/PythonScript"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/res/images/notepad++-16x16.png" valign="middle" alt="notepad++ PythonScript plugin" />&nbsp;Notepad++ PythonScript plugin</a>
+* <a href="https://github.com/WinMerge/winmerge"><img src="https://github.com/andry81/tacklebar--external_tools/raw/trunk/res/images/winmerge-16x16.png" valign="middle" alt="winmerge" />&nbsp;WinMerge</a>
 
 <h4 align="center">
 The latest version is here: https://sf.net/p/tacklebar</h4>
 
 ##
+
+<!-- -->
+<p align="center">
+  <a href="#"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fandry81%2Ftacklebar--external_tools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" valign="middle" alt="hits" /></a>
+</p>
+<!-- -->
 
 <p align="center">
   <a href="#"><img src="https://img.shields.io/github/repo-size/andry81/tacklebar--external_tools" valign="middle" alt="GitHub repo size in bytes" /></a>
@@ -50,30 +56,23 @@ The latest version is here: https://sf.net/p/tacklebar</h4>
   <a href="https://github.com/andry81/tacklebar--external_tools/blob/trunk/changelog.txt">Changelog</a>
 • <a href="https://github.com/andry81/tacklebar--external_tools/blob/trunk/README_EN.txt">Readme</a>
 • <a href="#dependentees">Dependentees</a>
-• <a href="#copyright-and-license"><img src="https://github.com/andry81/andry81/raw/master/badges/mit-license.svg" valign="middle" alt="copyright and license" />&nbsp;Copyright and License</a>
+• <a href="#copyright-and-license"><img src="https://github.com/andry81-cache/andry81--gh-content-cache/raw/master/badges/common/license/mit-license.svg" valign="middle" alt="copyright and license" />&nbsp;Copyright and License</a>
 </p>
 
 <p align="center">
   <a href='https://www.ghisler.ch/board/search.php?keywords="%5BExtension%5D+Tacklebar"&terms=all&author=andry81&fid%5B%5D=6&sc=0&sf=titleonly&sr=topics&sk=i&sd=d&st=0&ch=1&t=0&submit=Search'>
-    <img src="https://github.com/andry81/andry81/raw/master/badges/www-ghisler-ch--board.svg" valign="middle" alt="www.ghisler.ch board" />
+    <img src="https://github.com/andry81-cache/andry81--gh-content-cache/raw/master/badges/common/board/www-ghisler-ch--board.svg" valign="middle" alt="www.ghisler.ch board" />
     <img src="https://img.shields.io/badge/dynamic/json?color=success&label=replies&query=replies&url=https://github.com/andry81/tacklebar--totalcmd-stats/raw/master/traffic/board/totalcmd/latest.json?raw=True" valign="middle" alt="www.ghisler.ch board replies" />
     <img src="https://img.shields.io/badge/dynamic/json?color=success&label=views&query=views&url=https://github.com/andry81/tacklebar--totalcmd-stats/raw/master/traffic/board/totalcmd/latest.json?raw=True" valign="middle" alt="www.ghisler.ch board views" /></a>
 • <a href='https://doublecmd.h1n.ru/search.php?keywords="%5BExtension%5D+Tacklebar"&terms=all&author=andry81&fid%5B%5D=9&sc=0&sf=titleonly&sr=topics&sk=i&sd=d&st=0&ch=1&t=0&submit=Search'>
-    <img src="https://github.com/andry81/andry81/raw/master/badges/doublecmd-h1n-ru--board.svg" valign="middle" alt="doublecmd.h1n.ru board" />
+    <img src="https://github.com/andry81-cache/andry81--gh-content-cache/raw/master/badges/common/board/doublecmd-h1n-ru--board.svg" valign="middle" alt="doublecmd.h1n.ru board" />
     <img src="https://img.shields.io/badge/dynamic/json?color=success&label=replies&query=replies&url=https://github.com/andry81/tacklebar--doublecmd-stats/raw/master/traffic/board/doublecmd/latest.json?raw=True" valign="middle" alt="doublecmd.h1n.ru board replies" />
     <img src="https://img.shields.io/badge/dynamic/json?color=success&label=views&query=views&url=https://github.com/andry81/tacklebar--doublecmd-stats/raw/master/traffic/board/doublecmd/latest.json?raw=True" valign="middle" alt="doublecmd.h1n.ru board views" /></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/sponsors/andry81"><img src="https://github.com/andry81/andry81/raw/master/badges/github-sponsor.svg" valign="middle" alt="github sponsor" /></a>
-• <a href="https://www.paypal.com/cgi-bin/webscr?item_name=Donation+to+tacklebar&cmd=_donations&business=andry%40inbox.ru"><img src="https://github.com/andry81/andry81/raw/master/badges/paypal-donate.svg" valign="middle" alt="paypal donate" /></a>
+  <a href="https://github.com/andry81/donate"><img src="https://github.com/andry81-cache/andry81--gh-content-cache/raw/master/badges/common/donate/donate.svg" valign="middle" alt="donate" /></a>
 </p>
-
-<!-- -->
-<p align="center">
-  <a href="#"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fandry81%2Ftacklebar--external_tools&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" valign="middle" alt="hits" /></a>
-</p>
-<!-- -->
 
 ---
 
