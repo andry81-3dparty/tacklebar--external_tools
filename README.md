@@ -1,4 +1,4 @@
-> :warning: FOR GIT USERS: Before to clone the repository ensure you have required git extension to process `.gitsvnextmodules` file because the basic functionality of the git does not support that extension!
+> **Warning** FOR GIT USERS: Before to clone the repository ensure you have required git extension to process `.gitsvnextmodules` file because the basic functionality of the git does not support that extension!
 
 ### External application tools:
   
