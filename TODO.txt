@@ -1,0 +1,13 @@
+- install by default x64 versions of all applications in case of x64 OS:
+
+  - Notepad++
+  - PythonScript
+  - WinMerge
+  - VCRedist
+
+- Select which one version of PythonScript to install for Notepad++.
+  If only Notepad++ x64 exists then, install x64 only. If x86 then, x86.
+  Otherwise for both.
+
+- upgrade all apps to the latest versions, but leave the old versions for old
+  Windows OS versions
