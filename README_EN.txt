@@ -1,14 +1,15 @@
 * README_EN.txt
-* 2021.10.02
+* 2023.05.05
 * tacklebar--external_tools
 
 1. DESCRIPTION
 2. LICENSE
 3. REPOSITORIES
-4. INSTALLATION
-4.1. Windows XP support
-5. KNOWN ISSUES
-6. AUTHOR
+4. EXTERNALS
+5. INSTALLATION
+5.1. Windows XP support
+6. KNOWN ISSUES
+7. AUTHOR
 
 -------------------------------------------------------------------------------
 1. DESCRIPTION
@@ -17,12 +18,6 @@ External application tools:
   * Notepad++
   * Notepad++ PythonScript plugin
   * WinMerge
-
-The latest version is here: https://sf.net/p/tacklebar
-
-WARNING:
-  Use the SVN access to find out new functionality and bug fixes.
-  See the REPOSITORIES section.
 
 ------------------------------------------------------------------------------
 2. LICENSE
@@ -34,17 +29,40 @@ https://en.wikipedia.org/wiki/MIT_License)
 3. REPOSITORIES
 -------------------------------------------------------------------------------
 Primary:
-  * https://sf.net/p/tacklebar/external_tools/HEAD/tree/trunk
-  * https://svn.code.sf.net/p/tacklebar/external_tools/trunk
+  * https://github.com/andry81-3dparty/tacklebar--external_tools/branches
+  * https://github.com/andry81-3dparty/tacklebar--external_tools.git
 First mirror:
-  * https://github.com/andry81/tacklebar--external_tools/tree/trunk
-  * https://github.com/andry81/tacklebar--external_tools.git
+  * https://sf.net/p/external-tools/tacklebar--external_tools/ci/master/tree
+  * https://git.code.sf.net/p/tacklebar/external_tools
 Second mirror:
-  * https://bitbucket.org/andry81/tacklebar-external_tools/src/trunk
+  * https://bitbucket.org/andry81/tacklebar-external_tools/branches
   * https://bitbucket.org/andry81/tacklebar-external_tools.git
 
+-------------------------------------------------------------------------------
+4. EXTERNALS
+-------------------------------------------------------------------------------
+To checkout externals you must use the
+[vcstool](https://github.com/dirk-thomas/vcstool) python module.
+
+NOTE:
+  To install the module from the git repository:
+
+  >
+  python -m pip install git+https://github.com/dirk-thomas/vcstool
+
+CAUTION:
+  To use the sparse checkout feature you must use a forked repository:
+
+  >
+  python -m pip install git+https://github.com/aaronplusone/vcstool@feature-sparse-checkouts
+
+    Or
+
+  >
+  python -m pip install git+https://github.com/plusone-robotics/vcstool@por_master
+
 ------------------------------------------------------------------------------
-4. INSTALLATION
+5. INSTALLATION
 ------------------------------------------------------------------------------
 
 NOTE:
@@ -55,7 +73,7 @@ NOTE:
 _install.bat
 
 ------------------------------------------------------------------------------
-4.1. Windows XP support
+5.1. Windows XP support
 ------------------------------------------------------------------------------
 
 For the Windows XP the initial codepage in the `config.system.vars`
@@ -68,12 +86,12 @@ installation. You can change it:
 _install.bat -chcp 866
 
 ------------------------------------------------------------------------------
-5. KNOWN ISSUES
+6. KNOWN ISSUES
 ------------------------------------------------------------------------------
 
 See details in the `README_EN.txt` file of the `tacklebar` project.
 
 -------------------------------------------------------------------------------
-6. AUTHOR
+7. AUTHOR
 -------------------------------------------------------------------------------
 Andrey Dibrov (andry at inbox dot ru)
