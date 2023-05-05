@@ -1,4 +1,8 @@
 2023.05.05:
+* new: .externals: added usage of `vcstool` fork (https://github.com/aaronplusone/vcstool/tree/feature-sparse-checkouts) project to port `svn:externals` dependencies from svn into git
+* changed: removed svn related files
+
+2023.05.05:
 * changed: README_EN.txt, README.md: readme update
 
 2022.09.20:
