@@ -1,0 +1,45 @@
+repositories:
+
+  _externals/contools:
+    type:         git
+    url:          https://github.com/andry81/contools
+    version:      master
+    subpaths:
+      - __init__
+      - _config
+      - Scripts/__init__
+      - Scripts/Tools/__init__
+      - Scripts/Tools/encoding
+      - Scripts/Tools/filesys
+      - Scripts/Tools/registry
+      - Scripts/Tools/std
+      - Scripts/Tools/ToolAdaptors/__init__
+      - Scripts/Tools/ToolAdaptors/lnk
+      - Scripts/Tools/ToolAdaptors/vbs
+      - Scripts/Tools/wmi
+      - Scripts/Tools/xcopy
+      - Utilities/bin/contools
+
+  _externals/tacklelib:
+    type:         git
+    url:          https://github.com/andry81/tacklelib
+    version:      master
+    subpaths:
+      - __init__
+      - _config
+      - vbs
+
+  _externals/fpwestlake-conutils:
+    type:         git
+    url:          https://github.com/andry81-3dparty/external-tools--fpwestlake-conutils
+    version:      20010118
+
+  _externals/gnuwin32:
+    type:         git
+    url:          https://github.com/andry81-3dparty/external-tools--gnuwin32
+    version:      20101227
+
+  _externals/sysinternals:
+    type:         git
+    url:          https://github.com/andry81-3dparty/external-tools--sysinternals
+    version:      20230412
