@@ -49,9 +49,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/andry81-3dparty/tacklebar--external_tools/blob/master/changelog.txt">Changelog</a>
-• <a href="https://github.com/andry81-3dparty/tacklebar--external_tools/blob/master/README_EN.txt">Readme</a>
-• <a href="#dependentees">Dependentees</a>
+  <a href="https://github.com/andry81-3dparty/tacklebar--external_tools/tree/HEAD/changelog.txt">Changelog</a>
+• <a href="https://github.com/andry81-3dparty/tacklebar--external_tools/tree/HEAD/README_EN.txt">Readme</a>
+• <a href="#dependants">Dependants</a>
 • <a href="#copyright-and-license"><img src="https://github.com/andry81-cache/gh-content-static-cache/raw/master/common/badges/license/mit-license.svg" valign="middle" alt="copyright and license" />&nbsp;Copyright and License</a>
 </p>
 
@@ -76,6 +76,6 @@
 
 * https://github.com/andry81/tacklebar
 
-## Copyright and License<a name="copyright-and-license"></a>
+## <a name="copyright-and-license">Copyright and License</a>
 
-Code and documentation copyright 2021 Andrey Dibrov. Code released under [MIT License](https://github.com/andry81-3dparty/tacklebar--external_tools/blob/master/license.txt)
+Code and documentation copyright 2021 Andrey Dibrov. Code released under [MIT License](https://github.com/andry81-3dparty/tacklebar--external_tools/tree/HEAD/license.txt)

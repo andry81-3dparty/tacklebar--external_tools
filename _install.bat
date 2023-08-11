@@ -6,7 +6,7 @@ if %IMPL_MODE%0 NEQ 0 goto IMPL
 
 set TACKLEBAR_SCRIPTS_INSTALL=1
 
-call "%%~dp0__init__/__init__.bat" 0 || exit /b
+call "%%~dp0__init__/__init__.bat" || exit /b
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%*
 
@@ -66,11 +66,6 @@ rem CONs:
 rem   1. The `callf.exe` still can not redirect stdin/stdout of a child `cmd.exe` process without losing the auto completion feature (in case of interactive input - `cmd.exe /k`).
 rem
 
-set "INIT_VARS_FILE=%PROJECT_LOG_DIR%\init.vars"
-
-rem register all environment variables
-set 2>nul > "%INIT_VARS_FILE%"
-
 rem CAUTION:
 rem   The `ConSetBuffer.exe` utility has issue when changes screen buffer size under elevated environment through the `callf.exe` utility.
 rem   To workaround that we have to change screen buffer sizes before the elevation.
@@ -79,19 +74,12 @@ call "%%?~dp0%%._install\_install.update.terminal_params.bat" -update_screen_siz
 
 echo.Request Administrative permissions to install...
 
-rem variables escaping
-set "?~dp0=%?~dp0:{=\{%"
-set "?~f0=%?~f0:{=\{%"
-set "COMSPECLNK=%COMSPEC:{=\{%"
+set "INIT_VARS_FILE=%PROJECT_LOG_DIR%\init.vars"
 
-"%CONTOOLS_UTILITIES_BIN_ROOT%/contools/callf.exe" ^
-  /promote{ /load-parent-proc-init-env-vars /ret-child-exit } /promote-parent{ /pause-on-exit /tee-stdout "%PROJECT_LOG_FILE%" /tee-stderr-dup 1 } ^
-  /elevate{ /no-window /create-inbound-server-pipe-to-stdout tacklebar_ext_tools_install_stdout_{pid} /create-inbound-server-pipe-to-stderr tacklebar_ext_tools_install_stderr_{pid} ^
-  }{ /attach-parent-console /reopen-stdout-as-client-pipe tacklebar_ext_tools_install_stdout_{ppid} /reopen-stderr-as-client-pipe tacklebar_ext_tools_install_stderr_{ppid} } ^
-  /no-expand-env /no-subst-pos-vars ^
-  /v IMPL_MODE 1 /v INIT_VARS_FILE "%INIT_VARS_FILE%" ^
-  /ra "%%" "%%?01%%" /v "?01" "%%" ^
-  "%COMSPECLNK%" "/c \"@\"%?~dp0%._install\_install.update.terminal_params.bat\" -update_registry ^& @\"%?~f0%\" {*}\"" %*
+rem register all environment variables
+set 2>nul > "%INIT_VARS_FILE%"
+
+call "%%CONTOOLS_ROOT%%/exec/exec_callf_prefix.bat" -Y /pause-on-exit -elevate tacklebar_install -- %%*
 set LASTERROR=%ERRORLEVEL%
 
 exit /b %LASTERROR%
@@ -104,7 +92,23 @@ rem check for true elevated environment (required in case of Windows XP)
 ) >&2
 
 rem load initialization environment variables
-if defined INIT_VARS_FILE for /F "usebackq eol=# tokens=1,* delims==" %%i in ("%INIT_VARS_FILE%") do set "%%i=%%j"
+if defined INIT_VARS_FILE call "%%CONTOOLS_ROOT%%/std/set_vars_from_file.bat" "%%INIT_VARS_FILE%%"
+
+if exist "%SystemRoot%\System64\" goto IGNORE_MKLINK_SYSTEM64
+
+call "%%CONTOOLS_ROOT%%/ToolAdaptors/lnk/install_system64_link.bat"
+
+if not exist "%SystemRoot%\System64\" (
+  echo.%?~nx0%: error: could not create directory link: "%SystemRoot%\System64" -^> "%SystemRoot%\System32"
+  exit /b 255
+) >&2
+
+echo.
+
+:IGNORE_MKLINK_SYSTEM64
+
+rem CAUTION: requires `"%SystemRoot%\System64` directory installation
+call "%%?~dp0%%._install\_install.update.terminal_params.bat" -update_registry || exit /b 255
 
 rem script flags
 set "FLAG_CHCP="
@@ -186,20 +190,20 @@ mkdir "%EMPTY_DIR_TMP%" || (
 echo.
 echo.Required Windows version: %WINDOWS_X64_MIN_VER_STR%+ OR %WINDOWS_X86_MIN_VER_STR%+
 echo.
-echo.Required set of 3dparty software included into install:
+echo.Required set of 3dparty software included into distribution:
 echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+, https://notepad-plus-plus.org/downloads/ )
 echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+, https://github.com/bruderstein/PythonScript )
 echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
 echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+, https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243 )
 echo.
-echo.Required set of 3dparty software not included into install:
+echo.Required set of 3dparty software not included into distribution:
 echo  * ffmpeg (ffmpeg module,
 echo.           https://ffmpeg.org/download.html#build-windows, https://github.com/BtbN/FFmpeg-Builds/releases,
 echo.           https://github.com/Reino17/ffmpeg-windows-build-helpers, https://rwijnsma.home.xs4all.nl/files/ffmpeg/?C=M;O=D )
 echo. * msys2 (coreutils package, https://www.msys2.org/#installation )
 echo. * cygwin (coreutils package, https://cygwin.com )
 echo.
-echo.Optional set of supported 3dparty software not included into install:
+echo.Optional set of supported 3dparty software not included into distribution:
 echo. * MinTTY (https://mintty.github.io, https://github.com/mintty/mintty)
 echo. * ConEmu (%CONEMU_MIN_VER_STR%+, https://github.com/Maximus5/ConEmu )
 echo.   NOTE: Under the Windows XP x64 SP2 only x86 version does work.
@@ -230,7 +234,8 @@ echo.
 
 :REPEAT_INSTALL_3DPARTY_ASK
 set "CONTINUE_INSTALL_ASK="
-echo.Do you want to continue [y]es/[n]o?
+
+echo.Ready to install, do you want to continue [y]es/[n]o?
 set /P "CONTINUE_INSTALL_ASK="
 
 if /i "%CONTINUE_INSTALL_ASK%" == "y" goto CONTINUE_INSTALL_3DPARTY_ASK

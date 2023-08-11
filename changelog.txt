@@ -1,3 +1,6 @@
+2023.08.11:
+* changed: rollup merge from `tacklebar` project
+
 2023.05.05:
 * new: .externals: added usage of `vcstool` fork (https://github.com/aaronplusone/vcstool/tree/feature-sparse-checkouts) project to port `svn:externals` dependencies from svn into git
 * changed: removed svn related files
