@@ -264,14 +264,8 @@ call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.bat"
 
 echo.
 
-if defined DETECTED_NPP_EDITOR if exist "\\?\%DETECTED_NPP_EDITOR%" goto DETECTED_NPP_EDITOR_OK
-
-(
-  echo.%?~nx0%: error: Notepad++ must be already installed before continue.
-  goto CANCEL_INSTALL
-) >&2
-
-:DETECTED_NPP_EDITOR_OK
+if not defined DETECTED_NPP_EDITOR goto SKIP_NPP_EDITOR_POSTINSTALL
+if not exist "\\?\%DETECTED_NPP_EDITOR%" goto SKIP_NPP_EDITOR_POSTINSTALL
 
 if %WINDOWS_MAJOR_VER% GTR 5 goto IGNORE_NPP_EDITOR_PATCHES
 
@@ -308,6 +302,8 @@ call :XCOPY_FILE "%%DETECTED_NPP_INSTALL_DIR%%/plugins/PythonScript" python27.dl
 echo.
 
 :IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
+
+:SKIP_NPP_EDITOR_POSTINSTALL
 
 echo.Installing WinMerge...
 

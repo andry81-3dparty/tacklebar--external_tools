@@ -1,4 +1,8 @@
 2023.10.17:
+* fixed: _install*: execution fixup
+* changed: README_EN.txt: readme update
+
+2023.10.17:
 * changed: rollup merge from `tacklebar` project
 
 2023.08.11:
