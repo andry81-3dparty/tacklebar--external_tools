@@ -61,6 +61,9 @@ rem   3. Process inheritance tree is retained between non-elevated process and e
 rem   4. A single console can be shared between non-elevated and elevated processes.
 rem   5. A single log file can be shared between non-elevated and elevated processes.
 rem   6. The `/pause-on-exit*` flags of the `callf.exe` does not block execution on detached console versus the `pause` command of the `cmd.exe` interpreter which does block.
+rem   7. Because the console window is owned or attached by the most top parent `callf.exe` process with the `/pause-on-exit*` flag, then
+rem      there is no chance to skip the pause or skip a print into the console window if someone of children processes got crash or console detach,
+rem      even under elevated environment.
 rem
 rem CONs:
 rem   1. The `callf.exe` still can not redirect stdin/stdout of a child `cmd.exe` process without losing the auto completion feature (in case of interactive input - `cmd.exe /k`).
@@ -74,10 +77,7 @@ call "%%?~dp0%%._install\_install.update.terminal_params.bat" -update_screen_siz
 
 echo.Request Administrative permissions to install...
 
-set "INIT_VARS_FILE=%PROJECT_LOG_DIR%\init.vars"
-
-rem register all environment variables
-set 2>nul > "%INIT_VARS_FILE%"
+call "%%CONTOOLS_ROOT%%/build/init_vars_file.bat" || exit /b
 
 call "%%CONTOOLS_ROOT%%/exec/exec_callf_prefix.bat" -Y /pause-on-exit -elevate tacklebar_install -- %%*
 set LASTERROR=%ERRORLEVEL%
@@ -94,11 +94,11 @@ rem check for true elevated environment (required in case of Windows XP)
 rem load initialization environment variables
 if defined INIT_VARS_FILE call "%%CONTOOLS_ROOT%%/std/set_vars_from_file.bat" "%%INIT_VARS_FILE%%"
 
-if exist "%SystemRoot%\System64\" goto IGNORE_MKLINK_SYSTEM64
+if exist "%SystemRoot%\System64\*" goto IGNORE_MKLINK_SYSTEM64
 
 call "%%CONTOOLS_ROOT%%/ToolAdaptors/lnk/install_system64_link.bat"
 
-if not exist "%SystemRoot%\System64\" (
+if not exist "%SystemRoot%\System64\*" (
   echo.%?~nx0%: error: could not create directory link: "%SystemRoot%\System64" -^> "%SystemRoot%\System32"
   exit /b 255
 ) >&2
@@ -340,7 +340,7 @@ if not exist "\\?\%~f2" (
   echo.
 )
 if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp "%%OEMCP%%" %%*
-) else  call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
+) else call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
 exit /b
 
 :MAKE_DIR
@@ -352,25 +352,14 @@ mkdir "%FILE_PATH%" 2>nul || if exist "%SystemRoot%\System32\robocopy.exe" ( "%S
 ) >&2
 exit /b
 
-:MOVE_FILE
-for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FROM_FILE_PATH=%%~fi"
-for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "TO_FILE_PATH=%%~fi"
-
-if exist "%SystemRoot%\System32\robocopy.exe" (
-  "%SystemRoot%\System32\robocopy.exe" /MOVE "%FROM_FILE_PATH%" "%TO_FILE_PATH%" "%~3" >nul
-) else move "%FROM_FILE_PATH%\%~3" "%TO_FILE_PATH%\%~3" >nul
+:XMOVE_FILE
+if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xmove_file.bat" -chcp "%%OEMCP%%" %%*
+) else call "%%CONTOOLS_ROOT%%/std/xmove_file.bat" %%*
 exit /b
 
-:MOVE_DIR
-for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FROM_FILE_DIR=%%~fi"
-for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "TO_FILE_DIR=%%~fi"
-
-if exist "%SystemRoot%\System32\robocopy.exe" (
-  "%SystemRoot%\System32\robocopy.exe" /MOVE /E "%FROM_FILE_DIR%" "%TO_FILE_DIR%" "*.*" >nul
-) else (
-  if exist "\\?\%TO_FILE_DIR%\" rmdir /Q "%TO_FILE_DIR%"
-  "%SystemRoot%\System32\cscript.exe" //NOLOGO "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/vbs/tacklelib/tools/shell/move_dir.vbs" "%FROM_FILE_DIR%" "%TO_FILE_DIR%"
-)
+:XMOVE_DIR
+if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat" -chcp "%%OEMCP%%" %%*
+) else call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat" %%*
 exit /b
 
 :CMD

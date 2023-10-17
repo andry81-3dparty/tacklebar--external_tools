@@ -6,6 +6,15 @@ set "TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT_INIT0_DIR=%~dp0"
 
 if not defined NEST_LVL set NEST_LVL=0
 
+rem Do not make a file or a directory
+if defined NO_GEN set /A NO_GEN+=0
+
+rem Do not make a log directory or a log file
+if defined NO_LOG set /A NO_LOG+=0
+
+rem Do not make a log output or stdio duplication into files
+if defined NO_LOG_OUTPUT set /A NO_LOG_OUTPUT+=0
+
 if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                "%%~dp0.."
 if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
 
@@ -30,10 +39,16 @@ call "%%CONTOOLS_ROOT%%/std/get_windows_version.bat" || exit /b
 rem Windows XP is minimal
 call "%%CONTOOLS_ROOT%%/std/check_windows_version.bat" 5 1 || exit /b
 
-if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%\" ( mkdir "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%" || exit /b 10 )
+if %NO_GEN%0 EQU 0 (
+  call "%%CONTOOLS_ROOT%%/std/mkdir_if_notexist.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b 10
+)
+
 if not defined LOAD_CONFIG_VERBOSE if %INIT_VERBOSE%0 NEQ 0 set LOAD_CONFIG_VERBOSE=1
 
-call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite_parse -gen_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+rem ignore generation of user config on install and use, because user config must be already generated before first use
+if %NO_GEN%0 EQU 0 (
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite_parse -gen_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+) else call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite_parse "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
 
 rem init external projects
 
@@ -41,8 +56,9 @@ if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/__init__/_
   call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklelib/__init__/__init__.bat" -no_load_user_config || exit /b
 )
 
-if not exist "%PROJECT_OUTPUT_ROOT%\" ( mkdir "%PROJECT_OUTPUT_ROOT%" || exit /b 11 )
-if not exist "%PROJECT_LOG_ROOT%\" ( mkdir "%PROJECT_LOG_ROOT%" || exit /b 12 )
+if %NO_GEN%0 EQU 0 (
+  call "%%CONTOOLS_ROOT%%/std/mkdir_if_notexist.bat" "%%PROJECT_OUTPUT_ROOT%%" || exit /b 11
+)
 
 if defined CHCP call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%CHCP%%
 
