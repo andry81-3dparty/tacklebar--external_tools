@@ -11,3 +11,11 @@
 
 - upgrade all apps to the latest versions, but leave the old versions for old
   Windows OS versions
+
+- dump signatures of all distributables:
+
+  >
+  rem add EULA acception into registry to avoid EULA acception GUI dialog in the build process
+  reg add HKCU\Software\Sysinternals\SigCheck /v EulaAccepted /t REG_DWORD /d 0x00000001 /f >nul 2>nul
+
+  "%CONTOOLS_SYSINTERNALS_ROOT%/sigcheck.exe" "..."

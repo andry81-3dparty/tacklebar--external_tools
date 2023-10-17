@@ -1,4 +1,7 @@
 2023.10.17:
+* changed: TODO.txt: todo update
+
+2023.10.17:
 * fixed: _install*: execution fixup
 * changed: README_EN.txt: readme update
 
@@ -16,7 +19,7 @@
 * changed: README_EN.txt, README.md: readme update
 
 2022.09.20:
-* new: todo file
+* new: TODO.txt: todo file
 
 2022.09.14:
 * fixed: _intall.bat: fixed script call in case if `INIT_VARS_FILE` variable is not defined
