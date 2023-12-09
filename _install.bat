@@ -94,11 +94,11 @@ rem check for true elevated environment (required in case of Windows XP)
 rem load initialization environment variables
 if defined INIT_VARS_FILE call "%%CONTOOLS_ROOT%%/std/set_vars_from_file.bat" "%%INIT_VARS_FILE%%"
 
-if exist "%SystemRoot%\System64\*" goto IGNORE_MKLINK_SYSTEM64
+if exist "\\?\%SystemRoot%\System64\*" goto IGNORE_MKLINK_SYSTEM64
 
 call "%%CONTOOLS_ROOT%%/ToolAdaptors/lnk/install_system64_link.bat"
 
-if not exist "%SystemRoot%\System64\*" (
+if not exist "\\?\%SystemRoot%\System64\*" (
   echo.%?~nx0%: error: could not create directory link: "%SystemRoot%\System64" -^> "%SystemRoot%\System32"
   exit /b 255
 ) >&2
@@ -153,6 +153,17 @@ rem
 if defined FLAG_CHCP ( call "%%CONTOOLS_ROOT%%/std/chcp.bat" -p %%FLAG_CHCP%%
 ) else call "%%CONTOOLS_ROOT%%/std/getcp.bat"
 
+set "XCOPY_FILE_CMD_BARE_FLAGS="
+set "XCOPY_DIR_CMD_BARE_FLAGS="
+set "XMOVE_FILE_CMD_BARE_FLAGS="
+set "XMOVE_DIR_CMD_BARE_FLAGS="
+if defined OEMCP (
+  set XCOPY_FILE_CMD_BARE_FLAGS=%XCOPY_FILE_CMD_BARE_FLAGS% -chcp "%OEMCP%"
+  set XCOPY_DIR_CMD_BARE_FLAGS=%XCOPY_DIR_CMD_BARE_FLAGS% -chcp "%OEMCP%"
+  set XMOVE_FILE_CMD_BARE_FLAGS=%XMOVE_FILE_CMD_BARE_FLAGS% -chcp "%OEMCP%"
+  set XMOVE_DIR_CMD_BARE_FLAGS=%XMOVE_DIR_CMD_BARE_FLAGS% -chcp "%OEMCP%"
+)
+
 call :MAIN %%*
 set LASTERROR=%ERRORLEVEL%
 
@@ -197,7 +208,7 @@ echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
 echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+, https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243 )
 echo.
 echo.Required set of 3dparty software not included into distribution:
-echo  * ffmpeg (ffmpeg module,
+echo. * ffmpeg (ffmpeg module,
 echo.           https://ffmpeg.org/download.html#build-windows, https://github.com/BtbN/FFmpeg-Builds/releases,
 echo.           https://github.com/Reino17/ffmpeg-windows-build-helpers, https://rwijnsma.home.xs4all.nl/files/ffmpeg/?C=M;O=D )
 echo. * msys2 (coreutils package, https://www.msys2.org/#installation )
@@ -322,8 +333,7 @@ if not exist "\\?\%~f3" (
   ) >&2
   echo.
 )
-if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" -chcp "%%OEMCP%%" %%*
-) else call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat" %%*
+call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat"%%XCOPY_FILE_CMD_BARE_FLAGS%% %%*
 exit /b
 
 :XCOPY_DIR
@@ -335,27 +345,24 @@ if not exist "\\?\%~f2" (
   ) >&2
   echo.
 )
-if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" -chcp "%%OEMCP%%" %%*
-) else call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat" %%*
+call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat"%%XCOPY_DIR_CMD_BARE_FLAGS%% %%*
 exit /b
 
 :MAKE_DIR
 for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
 
-mkdir "%FILE_PATH%" 2>nul || if exist "%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul ) else type 2>nul || (
+mkdir "%FILE_PATH%" 2>nul || if exist "\\?\%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul ) else type 2>nul || (
   echo.%?~nx0%: error: could not create a target file directory: "%FILE_PATH%".
   exit /b 255
 ) >&2
 exit /b
 
 :XMOVE_FILE
-if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xmove_file.bat" -chcp "%%OEMCP%%" %%*
-) else call "%%CONTOOLS_ROOT%%/std/xmove_file.bat" %%*
+call "%%CONTOOLS_ROOT%%/std/xmove_file.bat"%%XMOVE_FILE_CMD_BARE_FLAGS%% %%*
 exit /b
 
 :XMOVE_DIR
-if defined OEMCP ( call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat" -chcp "%%OEMCP%%" %%*
-) else call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat" %%*
+call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat"%%XMOVE_DIR_CMD_BARE_FLAGS%% %%*
 exit /b
 
 :CMD
