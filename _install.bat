@@ -202,26 +202,48 @@ echo.
 echo.Required Windows version: %WINDOWS_X64_MIN_VER_STR%+ OR %WINDOWS_X86_MIN_VER_STR%+
 echo.
 echo.Required set of 3dparty software included into distribution:
-echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+, https://notepad-plus-plus.org/downloads/ )
-echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+, https://github.com/bruderstein/PythonScript )
-echo. * WinMerge (%WINMERGE_MIN_VER_STR%+, https://winmerge.org/downloads )
-echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+, https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243 )
+echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+)
+echo.   https://notepad-plus-plus.org/downloads/
+echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+)
+echo.   https://github.com/bruderstein/PythonScript
+echo. * WinMerge (%WINMERGE_MIN_VER_STR%+)
+echo.   https://winmerge.org/downloads
+echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+)
+echo.   https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243
 echo.
 echo.Required set of 3dparty software not included into distribution:
-echo. * ffmpeg (ffmpeg module,
-echo.           https://ffmpeg.org/download.html#build-windows, https://github.com/BtbN/FFmpeg-Builds/releases,
-echo.           https://github.com/Reino17/ffmpeg-windows-build-helpers, https://rwijnsma.home.xs4all.nl/files/ffmpeg/?C=M;O=D )
-echo. * msys2 (coreutils package, https://www.msys2.org/#installation )
-echo. * cygwin (coreutils package, https://cygwin.com )
+echo. * Git (%GIT_MIN_VER_STR%+)
+echo.   https://git-scm.com
+echo. * Bash shell for Git (%GIT_SHELL_MIN_VER_STR%+)
+echo.   https://git-scm.com (builtin package)
+echo.   https://www.msys2.org/#installation (`Bash` package)
+echo.   https://cygwin.com (`Bash` package)
+echo. * GitExtensions (%GITEXTENSIONS_MIN_VER_STR%+)
+echo.   https://github.com/gitextensions/gitextensions
+echo. * TortoiseSVN (%TORTOISESVN_MIN_VER_STR%+)
+echo.   https://tortoisesvn.net/
+echo. * ffmpeg
+echo.   https://ffmpeg.org/download.html#build-windows
+echo.   https://github.com/BtbN/FFmpeg-Builds/releases
+echo.   https://github.com/Reino17/ffmpeg-windows-build-helpers
+echo.   https://rwijnsma.home.xs4all.nl/files/ffmpeg/?C=M;O=D
+echo. * msys2
+echo.   https://www.msys2.org/#installation (`coreutils` package)
+echo. * cygwin
+echo.   https://cygwin.com (`coreutils` package)
 echo.
 echo.Optional set of supported 3dparty software not included into distribution:
-echo. * MinTTY (https://mintty.github.io, https://github.com/mintty/mintty)
-echo. * ConEmu (%CONEMU_MIN_VER_STR%+, https://github.com/Maximus5/ConEmu )
+echo. * MinTTY
+echo.   https://mintty.github.io, https://github.com/mintty/mintty
+echo. * ConEmu (%CONEMU_MIN_VER_STR%+)
+echo.   https://github.com/Maximus5/ConEmu
 echo.   NOTE: Under the Windows XP x64 SP2 only x86 version does work.
-echo. * Araxis Merge (%ARAXIS_MERGE_MIN_VER_STR%+, https://www.araxis.com/merge/documentation-windows/release-notes.en )
+echo. * Araxis Merge (%ARAXIS_MERGE_MIN_VER_STR%+)
+echo.   https://www.araxis.com/merge/documentation-windows/release-notes.en
 echo.
 echo. CAUTION:
-echo.   You must install at least Notepad++ (with PythonScript plugin) and WinMerge (or Araxis Merge) to continue.
+echo.   You must install at least Notepad++ (with PythonScript plugin) and
+echo.   WinMerge (or Araxis Merge) to continue.
 echo.
 
 rem Check Windows service pack version and warn the user
