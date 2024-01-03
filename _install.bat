@@ -8,7 +8,7 @@ set TACKLEBAR_SCRIPTS_INSTALL=1
 
 call "%%~dp0__init__/__init__.bat" || exit /b
 
-call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%*
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%* || exit /b
 
 for %%i in (CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT) do (
   if not defined %%i (
@@ -85,6 +85,9 @@ set LASTERROR=%ERRORLEVEL%
 exit /b %LASTERROR%
 
 :IMPL
+rem CAUTION: We must to reinit the builtin variables in case if `IMPL_MODE` was already setup outside.
+call "%%CONTOOLS_ROOT%%/std/declare_builtins.bat" %%0 %%* || exit /b
+
 rem check for true elevated environment (required in case of Windows XP)
 "%SystemRoot%\System32\net.exe" session >nul 2>nul || (
   echo.%?~nx0%: error: the script process is not properly elevated up to Administrator privileges.
@@ -347,24 +350,17 @@ echo.
 exit /b 0
 
 :XCOPY_FILE
-if not exist "\\?\%~f3" (
+if not exist "\\?\%~f3\*" (
   echo.^>mkdir "%~3"
-  call :MAKE_DIR "%%~3" || (
-    echo.%?~nx0%: error: could not create a target file directory: "%~3".
-    exit /b 255
-  ) >&2
+  call :MAKE_DIR "%%~3" || exit /b
   echo.
 )
 call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat"%%XCOPY_FILE_CMD_BARE_FLAGS%% %%*
 exit /b
 
 :XCOPY_DIR
-if not exist "\\?\%~f2" (
-  echo.^>mkdir "%~2"
-  call :MAKE_DIR "%%~2" || (
-    echo.%?~nx0%: error: could not create a target directory: "%~2".
-    exit /b 255
-  ) >&2
+if not exist "\\?\%~f2\*" (
+  call :MAKE_DIR "%%~2" || exit /b
   echo.
 )
 call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat"%%XCOPY_DIR_CMD_BARE_FLAGS%% %%*
@@ -373,6 +369,7 @@ exit /b
 :MAKE_DIR
 for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
 
+echo.^>mkdir "%FILE_PATH%"
 mkdir "%FILE_PATH%" 2>nul || if exist "\\?\%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul ) else type 2>nul || (
   echo.%?~nx0%: error: could not create a target file directory: "%FILE_PATH%".
   exit /b 255
