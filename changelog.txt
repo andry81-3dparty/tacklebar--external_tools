@@ -1,3 +1,7 @@
+2024.01.04:
+* changed: rollup merge from `tacklebar` project
+* changed: README_EN.txt: readme update
+
 2024.01.03:
 * changed: minor code cleanup
 

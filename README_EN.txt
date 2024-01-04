@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2023.10.17
+* 2024.01.04
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -17,9 +17,9 @@
 -------------------------------------------------------------------------------
 External tools for `tacklebar` project.
 
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 2. LICENSE
-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
 The MIT license (see included text file "license.txt" or
 https://en.wikipedia.org/wiki/MIT_License)
 
@@ -33,8 +33,8 @@ First mirror:
   * https://sf.net/p/external-tools/tacklebar--external_tools/ci/master/tree
   * https://git.code.sf.net/p/tacklebar/external_tools
 Second mirror:
-  * https://bitbucket.org/andry81/tacklebar-external_tools/branches
-  * https://bitbucket.org/andry81/tacklebar-external_tools.git
+  * https://gitlab.com/andry81/tacklebar-external_tools/-/branches
+  * https://gitlab.com/andry81/tacklebar-external_tools.git
 
 -------------------------------------------------------------------------------
 4. DISTRIBUTION
@@ -54,10 +54,6 @@ Catalog of applications, tools, modules and files included in the distribution:
     - 1.5.4.0 32-bit
 
       - Python 2.7.18 32-bit
-
-  * Python 2.7.18 modules
-
-    - psutil 5.9.5
 
   * WinMerge
 

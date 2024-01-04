@@ -404,5 +404,6 @@ exit /b 0
 :CANCEL_INSTALL
 (
   echo.%?~nx0%: info: installation is canceled.
+  echo.
   exit /b 127
 ) >&2
