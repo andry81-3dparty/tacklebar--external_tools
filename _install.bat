@@ -309,7 +309,7 @@ echo.Applying Notepad++ patches...
 
 if not exist "%DETECTED_NPP_ROOT%/updater/libcurl.dll.bak" move "%DETECTED_NPP_ROOT%\updater\libcurl.dll" "%DETECTED_NPP_ROOT%\updater\libcurl.dll.bak" >nul
 
-call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
+call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
 
 echo.
 

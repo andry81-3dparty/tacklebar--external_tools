@@ -1,4 +1,8 @@
 2024.01.04:
+* new: .externals-winxp: project externals for Windows XP+
+* changed: apps, deploy, README_EN.txt: content is moved into `tacklebar--external_tools-winxp` project
+
+2024.01.04:
 * changed: rollup merge from `tacklebar` project
 * changed: README_EN.txt: readme update
 
@@ -401,9 +405,6 @@
 * fixed: _install.bat: Windows XP compatibility
 * new: _install.bat: `-chcp` flag for an arbitrary codepage request
 * changed: readme update
-
-2021.01.08:
-* changed: apps/notepad++: upgrade Notepad++ from 7.9.1 to 7.9.2
 
 2021.01.07:
 * changed: merge from tacklebar project
