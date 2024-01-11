@@ -194,6 +194,18 @@ rem   %*
 rem )
 rem exit /b
 
+if %WINDOWS_MAJOR_VER% GTR 5 (
+  if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/.git/*" (
+    echo.%?~n0%: error: `.externals-win7` externals must be checkout before install.
+    exit /b 255
+  ) >&2
+) else (
+  if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/.git/*" (
+    echo.%?~n0%: error: `.externals-winxp` externals must be checkout before install.
+    exit /b 255
+  ) >&2
+)
+
 set "EMPTY_DIR_TMP=%SCRIPT_TEMP_CURRENT_DIR%\emptydir"
 
 mkdir "%EMPTY_DIR_TMP%" || (
@@ -284,17 +296,98 @@ echo.
 
 rem installing...
 
-echo.Installing Redistributables...
+if not %WINDOWS_MAJOR_VER% GTR 5 (
+  echo.Installing Redistributables...
 
-call :CMD start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
+  call :CMD start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
+
+  echo.
+)
+
+rem NOTE:
+rem   The default is Notepad++ 32-bit to use 32-bit Plugin Manager as most compatible for plugins.
+set "INSTALL_NPP_X64_VER=0"
+
+if not %WINDOWS_MAJOR_VER% GTR 5 goto REPEAT_INSTALL_NPP_X64_ASK_END
+if %WINDOWS_X64_VER% EQU 0 goto REPEAT_INSTALL_NPP_X64_ASK_END
+
+:REPEAT_INSTALL_NPP_X64_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to install 32-bit or 64-bit version of Notepad++: 3[2]-bit/6[4]-bit/[s]kip/[c]ancel?
+set /P "CONTINUE_INSTALL_ASK="
+
+if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_NPP_X64_ASK_END
+if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_NPP_X64_VER=1" & goto REPEAT_INSTALL_NPP_X64_ASK_END
+if /i "%CONTINUE_INSTALL_ASK%" == "s" (
+  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.
+  goto SKIP_NPP_INSTALL
+)
+if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
+
+goto REPEAT_INSTALL_NPP_X64_ASK
+
+:REPEAT_INSTALL_NPP_X64_ASK_END
+
+if not %WINDOWS_MAJOR_VER% GTR 5 goto SELECT_NPP_INSTALL_DIR_END
+
+echo.Checking previous Notepad++ installation...
+
+rem detect previous installation and avoid cross bitness installation
+call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.bat"
 
 echo.
+
+if not defined DETECTED_NPP_EDITOR goto PREVIOUS_NPP_INSTALL_DIR_OK
+if %DETECTED_NPP_EDITOR_X64_VER%0 EQU %INSTALL_NPP_X64_VER%0 goto PREVIOUS_NPP_INSTALL_DIR_OK
+
+echo.%?~nx0%: warning: previous Notepad++ installation has different bitness: "%DETECTED_NPP_EDITOR%".
+echo.
+
+:SELECT_NPP_INSTALL_DIR
+echo "Selecting new Notepad++ installation directory..."
+echo.
+
+set "INSTALL_NPP_TO_DIR="
+for /F "usebackq eol= tokens=* delims=" %%i in (`@"%%CONTOOLS_UTILITIES_BIN_ROOT%%/contools/wxFileDialog.exe" "" "%%DETECTED_NPP_ROOT%%" "Select new Notepad++ installation directory..." -d`) do set "INSTALL_NPP_TO_DIR=%%~fi"
+
+if not defined INSTALL_NPP_TO_DIR (
+  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.
+  goto SKIP_NPP_INSTALL
+)
+
+if /i not "%DETECTED_NPP_ROOT%" == "%INSTALL_NPP_TO_DIR%" goto SELECT_NPP_INSTALL_DIR_END
+
+echo.%?~nx0%: error: you can not select previous Notepad++ installation directory with different bitness.
+echo.
+
+goto SELECT_NPP_INSTALL_DIR
+
+:PREVIOUS_NPP_INSTALL_DIR_OK
+echo.%?~nx0%: info: previous Notepad++ installation has the same bitness or does not exist: "%DETECTED_NPP_EDITOR%".
+echo.
+
+:SELECT_NPP_INSTALL_DIR_END
 
 echo.Installing Notepad++...
 
-call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP%%"
+set "NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE="
+if defined INSTALL_NPP_TO_DIR set "NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE= /D=%INSTALL_NPP_TO_DIR%"
+
+if %WINDOWS_MAJOR_VER% GTR 5 (
+  if %INSTALL_NPP_X64_VER% NEQ 0 (
+    call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+  ) else (
+    call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+  )
+) else (
+  call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
+)
 
 echo.
+
+:SKIP_NPP_INSTALL
 
 call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.bat"
 
@@ -311,39 +404,84 @@ if not exist "%DETECTED_NPP_ROOT%/updater/libcurl.dll.bak" move "%DETECTED_NPP_R
 
 call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
 
-echo.
-
 :IGNORE_NPP_EDITOR_PATCHES
 
 echo.Installing Notepad++ PythonScript plugin...
 
 rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
-for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP=%%~fi"
 for /F "eol=	 tokens=* delims=" %%i in ("%DETECTED_NPP_EDITOR%\.") do for /F "eol=	 tokens=* delims=" %%j in ("%%~dpi\.") do set "DETECTED_NPP_INSTALL_DIR=%%~fj"
 
-rem CAUTION:
-rem   The plugin installer is broken, must always point the Notepad++ installation location!
-rem
-call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+if %WINDOWS_MAJOR_VER% GTR 5 (
+  if %DETECTED_NPP_EDITOR_X64_VER% NEQ 0 (
+    rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
+    for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64=%%~fi"
+
+    rem CAUTION:
+    rem   The plugin installer is broken, we must always point the Notepad++ installation location!
+    rem
+    call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+  ) else (
+    rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
+    for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86=%%~fi"
+
+    rem CAUTION:
+    rem   The plugin installer is broken, we must always point the Notepad++ installation location!
+    rem
+    call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+  )
+) else (
+  rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
+  for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86=%%~fi"
+
+  rem CAUTION:
+  rem   The plugin installer is broken, we must always point the Notepad++ installation location!
+  rem
+  call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+)
 
 echo.
 
-rem Fix for the Windows XP x86/x64 or the Windows 7+ x86
-if %WINDOWS_MAJOR_VER% GTR 5 if %WINDOWS_X64_VER% NEQ 0 goto IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
-
-echo.Fixing Notepad++ PythonScript plugin installation...
-
-call :XCOPY_FILE "%%DETECTED_NPP_INSTALL_DIR%%/plugins/PythonScript" python27.dll "%%DETECTED_NPP_INSTALL_DIR%%" /Y /D /H
+call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.pythonscript_plugin.bat"
 
 echo.
 
-:IGNORE_NPP_PYTHON_SCRIPT_PLUGIN_INSTALL_FIX
+call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.postinstall.notepadpp.pythonscript_plugin.bat" || goto CANCEL_INSTALL
 
 :SKIP_NPP_EDITOR_POSTINSTALL
 
+set "INSTALL_WINMERGE_X64_VER=0"
+
+if not %WINDOWS_MAJOR_VER% GTR 5 goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+if %WINDOWS_X64_VER% EQU 0 goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+
+:REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to install 32-bit or 64-bit version of WinMerge: 3[2]-bit/6[4]-bit/[c]ancel?
+set /P "CONTINUE_INSTALL_ASK="
+
+if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_WINMERGE_X64_VER=1" & goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
+
+goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK
+
+:REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+
 echo.Installing WinMerge...
 
-call :CMD start /B /WAIT "" "%%WINMERGE_SETUP%%"
+if %WINDOWS_MAJOR_VER% GTR 5 (
+  if %INSTALL_WINMERGE_X64_VER% NEQ 0 (
+    call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X64%%"
+  ) else (
+    call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
+  )
+) else (
+  call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
+)
+
+echo.
+
+call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.winmerge.bat"
 
 echo.
 
@@ -351,19 +489,18 @@ exit /b 0
 
 :XCOPY_FILE
 if not exist "\\?\%~f3\*" (
-  echo.^>mkdir "%~3"
   call :MAKE_DIR "%%~3" || exit /b
-  echo.
 )
 call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat"%%XCOPY_FILE_CMD_BARE_FLAGS%% %%*
+echo.
 exit /b
 
 :XCOPY_DIR
 if not exist "\\?\%~f2\*" (
   call :MAKE_DIR "%%~2" || exit /b
-  echo.
 )
 call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat"%%XCOPY_DIR_CMD_BARE_FLAGS%% %%*
+echo.
 exit /b
 
 :MAKE_DIR
@@ -372,16 +509,20 @@ for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
 echo.^>mkdir "%FILE_PATH%"
 mkdir "%FILE_PATH%" 2>nul || if exist "\\?\%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul ) else type 2>nul || (
   echo.%?~nx0%: error: could not create a target file directory: "%FILE_PATH%".
+  echo.
   exit /b 255
 ) >&2
+echo.
 exit /b
 
 :XMOVE_FILE
 call "%%CONTOOLS_ROOT%%/std/xmove_file.bat"%%XMOVE_FILE_CMD_BARE_FLAGS%% %%*
+echo.
 exit /b
 
 :XMOVE_DIR
 call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat"%%XMOVE_DIR_CMD_BARE_FLAGS%% %%*
+echo.
 exit /b
 
 :CMD

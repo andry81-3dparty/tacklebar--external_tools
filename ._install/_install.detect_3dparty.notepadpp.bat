@@ -8,15 +8,20 @@ call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %
 
 set "DETECTED_NPP_ROOT="
 set "DETECTED_NPP_EDITOR="
+set "DETECTED_NPP_EDITOR_X64_VER=0"
 
 echo.Searching Notepad++ installation...
 
 call :DETECT %%*
 
+echo. * NPP_ROOT="%DETECTED_NPP_ROOT%"
+echo. * NPP_EDITOR="%DETECTED_NPP_EDITOR%"
+echo. * NPP_EDITOR_X64_VER="%DETECTED_NPP_EDITOR_X64_VER%"
+
+if defined DETECTED_NPP_ROOT if not exist "%DETECTED_NPP_ROOT%\*" set "DETECTED_NPP_ROOT="
 if defined DETECTED_NPP_EDITOR if not exist "%DETECTED_NPP_EDITOR%" set "DETECTED_NPP_EDITOR="
-if defined DETECTED_NPP_EDITOR (
-  echo. * NPP_EDITOR="%DETECTED_NPP_EDITOR%"
-) else (
+
+if not defined DETECTED_NPP_EDITOR (
   echo.%?~nx0%: warning: Notepad++ is not detected.
 ) >&2
 
@@ -25,6 +30,7 @@ rem return variable
   endlocal
   set "DETECTED_NPP_ROOT=%DETECTED_NPP_ROOT%"
   set "DETECTED_NPP_EDITOR=%DETECTED_NPP_EDITOR%"
+  set "DETECTED_NPP_EDITOR_X64_VER=%DETECTED_NPP_EDITOR_X64_VER%"
 )
 
 exit /b 0
@@ -69,6 +75,10 @@ if not defined REGQUERY_VALUE goto END_SEARCH_NPP_EDITOR
 
 call :CANONICAL_PATH DETECTED_NPP_ROOT "%%REGQUERY_VALUE%%"
 call :CANONICAL_PATH DETECTED_NPP_EDITOR "%%DETECTED_NPP_ROOT%%/notepad++.exe"
+
+call "%%CONTOOLS_ROOT%%/filesys/read_pe_header_bitness.bat" "%%DETECTED_NPP_EDITOR%%"
+
+if "%RETURN_VALUE%" == "64" set "DETECTED_NPP_EDITOR_X64_VER=1"
 
 :END_SEARCH_NPP_EDITOR
 

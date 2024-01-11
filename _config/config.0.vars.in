@@ -15,10 +15,16 @@
 #                         Can start by the `"` quote character, but two quotes does remove only when exist on both ends of a value.
 #
 
-NOTEPAD_PLUS_PLUS_SETUP                       ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/notepad++/npp.7.9.2.Installer.exe"
+NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64                        ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/apps/notepad++/npp.8.6.1.Installer.x64.exe"
+NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86                        ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/apps/notepad++/npp.8.6.1.Installer.exe"
+NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86                       ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/notepad++/npp.7.9.2.Installer.exe"
 
-NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP  ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi"
+NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64   ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/apps/notepad++/plugins/PythonScript/PythonScript_3.0.17.0_x64.msi"
+NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86   ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/apps/notepad++/plugins/PythonScript/PythonScript_3.0.17.0.msi"
+NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86  ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/notepad++/plugins/PythonScript/PythonScript_1.5.4.0.msi"
 
-WINMERGE_SETUP                                ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/winmerge/WinMerge-2.16.8-Setup.exe"
+WINMERGE_SETUP_WIN7_X64                                 ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/apps/winmerge/WinMerge-2.16.36-x64-Setup.exe"
+WINMERGE_SETUP_WIN7_X86                                 ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/apps/winmerge/WinMerge-2.16.36-Setup.exe"
+WINMERGE_SETUP_WINXP_X86                                ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/winmerge/WinMerge-2.16.8-Setup.exe"
 
-VCREDIST_2008_SETUP                           ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/vcredist/2008/vcredist_x86.exe"
+VCREDIST_2008_SETUP_X86                                 ="%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/apps/vcredist/2008/vcredist_x86.exe"

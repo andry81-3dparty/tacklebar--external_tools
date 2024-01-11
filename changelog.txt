@@ -1,3 +1,11 @@
+2024.01.11:
+* new: _install*: 3dparty detection support
+* new: .externals-win7: project externals for Windows 7+
+* new: _install*, _config: automatic installation selection between components for Windows XP+ and Windows 7+
+* changed: .externals: added `7zip` externals
+* changed: rollup merge from `tacklebar` project
+* refactor: _install*: code refactor
+
 2024.01.04:
 * new: .externals-winxp: project externals for Windows XP+
 * changed: apps, deploy, README_EN.txt: content is moved into `tacklebar--external_tools-winxp` project
