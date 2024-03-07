@@ -15,6 +15,9 @@ if defined NO_LOG set /A NO_LOG+=0
 rem Do not make a log output or stdio duplication into files
 if defined NO_LOG_OUTPUT set /A NO_LOG_OUTPUT+=0
 
+rem Do not change code page
+if defined NO_CHCP set /A NO_CHCP+=0
+
 if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                "%%~dp0.."
 if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
 
@@ -32,11 +35,22 @@ if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  call "%%~dp0
 rem retarget externals of an external project
 
 if not defined CONTOOLS_PROJECT_EXTERNALS_ROOT                      call "%%~dp0canonical_path.bat" CONTOOLS_PROJECT_EXTERNALS_ROOT                      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
+if not defined TACKLEBAR_PROJECT_EXTERNALS_ROOT                     call "%%~dp0canonical_path.bat" TACKLEBAR_PROJECT_EXTERNALS_ROOT                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
 
 rem init immediate external projects
 
 if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/contools/__init__/__init__.bat" (
+  rem disable code page change in nested __init__
+  set /A NO_CHCP+=1
   call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/contools/__init__/__init__.bat" -no_load_user_config || exit /b
+  set /A NO_CHCP-=1
+)
+
+if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklebar/__init__/__init__.bat" (
+  rem disable generation
+  set /A NO_GEN+=1
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/__init__/__init__.bat" || exit /b
+  set /A NO_GEN-=1
 )
 
 call "%%CONTOOLS_ROOT%%/std/get_windows_version.bat" || exit /b
@@ -50,10 +64,13 @@ if %NO_GEN%0 EQU 0 (
 
 if not defined LOAD_CONFIG_VERBOSE if %INIT_VERBOSE%0 NEQ 0 set LOAD_CONFIG_VERBOSE=1
 
-rem ignore generation of user config on install and use, because user config must be already generated before first use
+rem reuse system config from `tacklebar` project from the externals, skip user config
 if %NO_GEN%0 EQU 0 (
-  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite_parse -gen_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
-) else call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/tools/load_config_dir.bat" -lite_parse "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -gen_system_config -no_load_user_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/_config" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+) else call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -no_load_user_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/_config" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+
+rem skip system config, load user config
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -no_load_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
 
 rem init external projects
 
@@ -65,6 +82,8 @@ if %NO_GEN%0 EQU 0 (
   call "%%CONTOOLS_ROOT%%/std/mkdir_if_notexist.bat" "%%PROJECT_OUTPUT_ROOT%%" || exit /b 11
 )
 
-if defined CHCP call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%CHCP%%
+if %NO_CHCP%0 EQU 0 (
+  if defined CHCP call "%%CONTOOLS_ROOT%%/std/chcp.bat" %%CHCP%%
+)
 
 exit /b 0

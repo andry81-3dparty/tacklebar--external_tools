@@ -10,12 +10,7 @@ call "%%~dp0__init__/__init__.bat" || exit /b
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%* || exit /b
 
-for %%i in (CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT) do (
-  if not defined %%i (
-    echo.%~nx0: error: `%%i` variable is not defined.
-    exit /b 255
-  ) >&2
-)
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/check_vars.bat" CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT || exit /b
 
 rem check WSH disable
 set "HKEYPATH=HKEY_CURRENT_USER\Software\Microsoft\Windows Script Host\Settings"
@@ -31,6 +26,7 @@ goto WSH_ENABLED
 :WSH_DISABLED
 (
   echo.%~nx0: error: Windows Script Host is disabled: "%HKEYPATH%\Enabled" = %REGQUERY_VALUE%
+  echo.
   exit /b 255
 ) >&2
 
@@ -73,7 +69,7 @@ rem CAUTION:
 rem   The `ConSetBuffer.exe` utility has issue when changes screen buffer size under elevated environment through the `callf.exe` utility.
 rem   To workaround that we have to change screen buffer sizes before the elevation.
 rem
-call "%%?~dp0%%._install\_install.update.terminal_params.bat" -update_screen_size -update_buffer_size
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.update.terminal_params.bat" -update_screen_size -update_buffer_size
 
 echo.Request Administrative permissions to install...
 
@@ -111,7 +107,7 @@ echo.
 :IGNORE_MKLINK_SYSTEM64
 
 rem CAUTION: requires `"%SystemRoot%\System64` directory installation
-call "%%?~dp0%%._install\_install.update.terminal_params.bat" -update_registry || exit /b 255
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.update.terminal_params.bat" -update_registry || exit /b 255
 
 rem script flags
 set "FLAG_CHCP="
@@ -179,6 +175,9 @@ call "%%CONTOOLS_ROOT%%/std/free_temp_dir.bat"
 
 :FREE_TEMP_DIR_END
 set /A NEST_LVL-=1
+
+echo.%?~nx0%: info: installation log directory: "%PROJECT_LOG_DIR%".
+echo.
 
 exit /b %LASTERROR%
 
@@ -283,6 +282,7 @@ echo.
 :REPEAT_INSTALL_3DPARTY_ASK
 set "CONTINUE_INSTALL_ASK="
 
+echo.Close all applications from the required section has been running before continue.
 echo.Ready to install, do you want to continue [y]es/[n]o?
 set /P "CONTINUE_INSTALL_ASK="
 
@@ -334,7 +334,7 @@ if not %WINDOWS_MAJOR_VER% GTR 5 goto SELECT_NPP_INSTALL_DIR_END
 echo.Checking previous Notepad++ installation...
 
 rem detect previous installation and avoid cross bitness installation
-call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.bat"
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.bat"
 
 echo.
 
@@ -389,7 +389,7 @@ echo.
 
 :SKIP_NPP_INSTALL
 
-call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.bat"
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.bat"
 
 echo.
 
@@ -441,7 +441,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
 
 echo.
 
-call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.notepadpp.pythonscript_plugin.bat"
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.pythonscript_plugin.bat"
 
 echo.
 
@@ -481,7 +481,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
 
 echo.
 
-call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.detect_3dparty.winmerge.bat"
+call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.winmerge.bat"
 
 echo.
 

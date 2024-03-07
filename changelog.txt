@@ -1,4 +1,11 @@
 2024.03.07:
+* new: .externals: `tacklebar` dependency
+* changed: _install*, tools: removed scripts duplication and use `tacklebar` scripts instead
+* changed: __init__, _config: removed system config and use `tacklebar` system config instead
+* changed: _config: switched all configs to use uniform config files loader
+* changed: rollup merge from `tacklebar` project
+
+2024.03.07:
 * changed: README_EN.txt: readme update
 
 2024.01.11:
