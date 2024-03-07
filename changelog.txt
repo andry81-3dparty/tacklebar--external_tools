@@ -1,3 +1,6 @@
+2024.03.07:
+* changed: README_EN.txt: readme update
+
 2024.01.11:
 * new: _install*: 3dparty detection support
 * new: .externals-win7: project externals for Windows 7+

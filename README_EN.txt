@@ -1,5 +1,5 @@
 * README_EN.txt
-* 2024.01.04
+* 2024.03.07
 * tacklebar--external_tools
 
 1. DESCRIPTION
@@ -28,23 +28,25 @@ https://en.wikipedia.org/wiki/MIT_License)
 -------------------------------------------------------------------------------
 Primary:
   * https://github.com/andry81-3dparty/tacklebar--external_tools/branches
-  * https://github.com/andry81-3dparty/tacklebar--external_tools.git
+    https://github.com/andry81-3dparty/tacklebar--external_tools.git
 First mirror:
   * https://sf.net/p/external-tools/tacklebar--external_tools/ci/master/tree
-  * https://git.code.sf.net/p/tacklebar/external_tools
+    https://git.code.sf.net/p/tacklebar/external_tools
 Second mirror:
   * https://gitlab.com/andry81/tacklebar-external_tools/-/branches
-  * https://gitlab.com/andry81/tacklebar-external_tools.git
+    https://gitlab.com/andry81/tacklebar-external_tools.git
 
 -------------------------------------------------------------------------------
 4. DISTRIBUTION
 -------------------------------------------------------------------------------
-See details in the `README_EN.txt` file of the `tacklebar--external_tools-*`
-project (`/.externals-*`).
+See details in the `README_EN.txt` file of the respective
+`tacklebar--external_tools-*` project (`/.externals-*`).
 
 -------------------------------------------------------------------------------
 5. EXTERNALS
 -------------------------------------------------------------------------------
+All project externals are declared in `.externals*` files.
+
 To checkout externals you must use the
 [vcstool](https://github.com/dirk-thomas/vcstool) python module.
 
