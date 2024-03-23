@@ -8,9 +8,9 @@ set TACKLEBAR_SCRIPTS_INSTALL=1
 
 call "%%~dp0__init__/__init__.bat" || exit /b
 
-call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/declare_builtins.bat" %%0 %%* || exit /b
+call "%%CONTOOLS_ROOT%%/std/declare_builtins.bat" %%0 %%* || exit /b
 
-call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/__init__/check_vars.bat" CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT || exit /b
+call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/check_vars.bat" CONTOOLS_ROOT CONTOOLS_UTILITIES_BIN_ROOT || exit /b
 
 rem check WSH disable
 set "HKEYPATH=HKEY_CURRENT_USER\Software\Microsoft\Windows Script Host\Settings"
@@ -32,7 +32,7 @@ goto WSH_ENABLED
 
 :WSH_ENABLED
 
-call "%%CONTOOLS_ROOT%%/build/init_project_log.bat" "%%?~n0%%" || exit /b
+call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/init_project_log.bat" "%%?~n0%%" || exit /b
 
 rem List of issues discovered in Windows XP/7:
 rem 1. Run from shortcut file (`.lnk`) in the Windows XP (but not in the Windows 7) brings truncated command line down to ~260 characters.
@@ -73,12 +73,12 @@ call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_i
 
 echo.Request Administrative permissions to install...
 
-call "%%CONTOOLS_ROOT%%/build/init_vars_file.bat" || exit /b
+call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/init_vars_file.bat" || exit /b
 
 call "%%CONTOOLS_ROOT%%/exec/exec_callf_prefix.bat" -Y /pause-on-exit -elevate tacklebar_install -- %%*
-set LASTERROR=%ERRORLEVEL%
+set LAST_ERROR=%ERRORLEVEL%
 
-exit /b %LASTERROR%
+exit /b %LAST_ERROR%
 
 :IMPL
 rem CAUTION: We must to reinit the builtin variables in case if `IMPL_MODE` was already setup outside.
@@ -139,11 +139,7 @@ if not defined NEST_LVL set NEST_LVL=0
 
 set /A NEST_LVL+=1
 
-call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%" || (
-  echo.%?~nx0%: error: could not allocate temporary directory: "%SCRIPT_TEMP_CURRENT_DIR%"
-  set LASTERROR=255
-  goto FREE_TEMP_DIR
-) >&2
+call "%%CONTOOLS_ROOT%%/std/allocate_temp_dir.bat" . "%%?~n0%%" || ( set "LAST_ERROR=255" & goto FREE_TEMP_DIR )
 
 rem CAUTION:
 rem   We have to change the codepage here because the change would be revoked upon the UAC promotion.
@@ -164,7 +160,7 @@ if defined OEMCP (
 )
 
 call :MAIN %%*
-set LASTERROR=%ERRORLEVEL%
+set LAST_ERROR=%ERRORLEVEL%
 
 rem restore locale
 if defined FLAG_CHCP call "%%CONTOOLS_ROOT%%/std/restorecp.bat" -p
@@ -179,41 +175,26 @@ set /A NEST_LVL-=1
 echo.%?~nx0%: info: installation log directory: "%PROJECT_LOG_DIR%".
 echo.
 
-exit /b %LASTERROR%
+exit /b %LAST_ERROR%
 
 :MAIN
-rem call :CMD "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_install.xsh"
-rem exit /b
-rem 
-rem :CMD
-rem echo.^>%*
-rem echo.
-rem (
-rem   %*
-rem )
+rem call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/callln.bat" "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_install.xsh"
 rem exit /b
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/.git/*" (
-    echo.%?~n0%: error: `.externals-win7` externals must be checkout before install.
+    echo.%?~nx0%: error: `.externals-win7` externals must be checkout before install.
     exit /b 255
   ) >&2
 ) else (
   if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/.git/*" (
-    echo.%?~n0%: error: `.externals-winxp` externals must be checkout before install.
+    echo.%?~nx0%: error: `.externals-winxp` externals must be checkout before install.
     exit /b 255
   ) >&2
 )
 
-set "EMPTY_DIR_TMP=%SCRIPT_TEMP_CURRENT_DIR%\emptydir"
-
-mkdir "%EMPTY_DIR_TMP%" || (
-  echo.%?~n0%: error: could not create a directory: "%EMPTY_DIR_TMP%".
-  exit /b 255
-) >&2
-
-echo.
-echo.Required Windows version: %WINDOWS_X64_MIN_VER_STR%+ OR %WINDOWS_X86_MIN_VER_STR%+
+rem echo.
+echo.Required Windows version:         %WINDOWS_X64_MIN_VER_STR%+ OR %WINDOWS_X86_MIN_VER_STR%+
 echo.
 echo.Required set of 3dparty software included into distribution:
 echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+)
@@ -255,9 +236,12 @@ echo.   NOTE: Under the Windows XP x64 SP2 only x86 version does work.
 echo. * Araxis Merge (%ARAXIS_MERGE_MIN_VER_STR%+)
 echo.   https://www.araxis.com/merge/documentation-windows/release-notes.en
 echo.
-echo. CAUTION:
-echo.   You must install at least Notepad++ (with PythonScript plugin) and
-echo.   WinMerge (or Araxis Merge) to continue.
+
+echo.===============================================================================
+echo.CAUTION:
+echo. You must install at least Notepad++ (with PythonScript plugin) and
+echo. WinMerge (or Araxis Merge) to continue.
+echo.===============================================================================
 echo.
 
 rem Check Windows service pack version and warn the user
@@ -271,10 +255,10 @@ if %WINDOWS_X64_VER% NEQ 0 (
   if %RETURN_VALUE% GEQ 1 goto WINDOWS_SP_VERSION_OK
 ) else if %RETURN_VALUE% GEQ 3 goto WINDOWS_SP_VERSION_OK
 
-echo. CAUTION:
-echo.   Windows XP service pack version: %RETURN_VALUE%
-echo.   This version of Windows XP is not supported by 3dparty software declared in the list above.
-echo.   You can continue to install, but if 3dparty software will stop work you have to manually find or downgrade to an old version.
+echo.CAUTION:
+echo. Windows XP service pack version: %RETURN_VALUE%
+echo. This version of Windows XP is not supported by 3dparty software declared in the list above.
+echo. You can continue to install, but if 3dparty software will stop work you have to manually find or downgrade to an old version.
 echo.
 
 :WINDOWS_SP_VERSION_OK
@@ -282,7 +266,11 @@ echo.
 :REPEAT_INSTALL_3DPARTY_ASK
 set "CONTINUE_INSTALL_ASK="
 
-echo.Close all applications from the required section has been running before continue.
+echo.===============================================================================
+echo.CAUTION:
+echo. Close all applications from the required section has been running before continue.
+echo.===============================================================================
+echo.
 echo.Ready to install, do you want to continue [y]es/[n]o?
 set /P "CONTINUE_INSTALL_ASK="
 
@@ -299,7 +287,7 @@ rem installing...
 if not %WINDOWS_MAJOR_VER% GTR 5 (
   echo.Installing Redistributables...
 
-  call :CMD start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
 
   echo.
 )
@@ -332,11 +320,10 @@ goto REPEAT_INSTALL_NPP_X64_ASK
 if not %WINDOWS_MAJOR_VER% GTR 5 goto SELECT_NPP_INSTALL_DIR_END
 
 echo.Checking previous Notepad++ installation...
+echo.
 
 rem detect previous installation and avoid cross bitness installation
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.bat"
-
-echo.
 
 if not defined DETECTED_NPP_EDITOR goto PREVIOUS_NPP_INSTALL_DIR_OK
 if %DETECTED_NPP_EDITOR_X64_VER%0 EQU %INSTALL_NPP_X64_VER%0 goto PREVIOUS_NPP_INSTALL_DIR_OK
@@ -371,27 +358,24 @@ echo.
 :SELECT_NPP_INSTALL_DIR_END
 
 echo.Installing Notepad++...
+echo.
 
 set "NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE="
 if defined INSTALL_NPP_TO_DIR set "NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE= /D=%INSTALL_NPP_TO_DIR%"
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if %INSTALL_NPP_X64_VER% NEQ 0 (
-    call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
   ) else (
-    call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
   )
 ) else (
-  call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
 )
-
-echo.
 
 :SKIP_NPP_INSTALL
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.bat"
-
-echo.
 
 if not defined DETECTED_NPP_EDITOR goto SKIP_NPP_EDITOR_POSTINSTALL
 if not exist "\\?\%DETECTED_NPP_EDITOR%" goto SKIP_NPP_EDITOR_POSTINSTALL
@@ -399,14 +383,16 @@ if not exist "\\?\%DETECTED_NPP_EDITOR%" goto SKIP_NPP_EDITOR_POSTINSTALL
 if %WINDOWS_MAJOR_VER% GTR 5 goto IGNORE_NPP_EDITOR_PATCHES
 
 echo.Applying Notepad++ patches...
+echo.
 
 if not exist "%DETECTED_NPP_ROOT%/updater/libcurl.dll.bak" move "%DETECTED_NPP_ROOT%\updater\libcurl.dll" "%DETECTED_NPP_ROOT%\updater\libcurl.dll.bak" >nul
 
-call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
+call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xcopy_dir.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
 
 :IGNORE_NPP_EDITOR_PATCHES
 
 echo.Installing Notepad++ PythonScript plugin...
+echo.
 
 rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
 for /F "eol=	 tokens=* delims=" %%i in ("%DETECTED_NPP_EDITOR%\.") do for /F "eol=	 tokens=* delims=" %%j in ("%%~dpi\.") do set "DETECTED_NPP_INSTALL_DIR=%%~fj"
@@ -419,7 +405,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     rem CAUTION:
     rem   The plugin installer is broken, we must always point the Notepad++ installation location!
     rem
-    call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
   ) else (
     rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
     for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86=%%~fi"
@@ -427,7 +413,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     rem CAUTION:
     rem   The plugin installer is broken, we must always point the Notepad++ installation location!
     rem
-    call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
   )
 ) else (
   rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
@@ -436,14 +422,10 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
   rem CAUTION:
   rem   The plugin installer is broken, we must always point the Notepad++ installation location!
   rem
-  call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
 )
 
-echo.
-
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.pythonscript_plugin.bat"
-
-echo.
 
 call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.postinstall.notepadpp.pythonscript_plugin.bat" || goto CANCEL_INSTALL
 
@@ -468,78 +450,23 @@ goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK
 :REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
 
 echo.Installing WinMerge...
+echo.
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if %INSTALL_WINMERGE_X64_VER% NEQ 0 (
-    call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X64%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X64%%"
   ) else (
-    call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
   )
 ) else (
-  call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
 )
-
-echo.
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.winmerge.bat"
 
+echo.%?~nx0%: info: installation is complete.
 echo.
 
-exit /b 0
-
-:XCOPY_FILE
-if not exist "\\?\%~f3\*" (
-  call :MAKE_DIR "%%~3" || exit /b
-)
-call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat"%%XCOPY_FILE_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:XCOPY_DIR
-if not exist "\\?\%~f2\*" (
-  call :MAKE_DIR "%%~2" || exit /b
-)
-call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat"%%XCOPY_DIR_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:MAKE_DIR
-for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
-
-echo.^>mkdir "%FILE_PATH%"
-mkdir "%FILE_PATH%" 2>nul || if exist "\\?\%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul ) else type 2>nul || (
-  echo.%?~nx0%: error: could not create a target file directory: "%FILE_PATH%".
-  echo.
-  exit /b 255
-) >&2
-echo.
-exit /b
-
-:XMOVE_FILE
-call "%%CONTOOLS_ROOT%%/std/xmove_file.bat"%%XMOVE_FILE_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:XMOVE_DIR
-call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat"%%XMOVE_DIR_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:CMD
-echo.^>%*
-(
-  %*
-)
-exit /b
-
-:CANONICAL_PATH
-setlocal DISABLEDELAYEDEXPANSION
-for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "RETURN_VALUE=%%~fi"
-rem set "RETURN_VALUE=%RETURN_VALUE:\=/%"
-(
-  endlocal
-  set "%~1=%RETURN_VALUE%"
-)
 exit /b 0
 
 :CANCEL_INSTALL
