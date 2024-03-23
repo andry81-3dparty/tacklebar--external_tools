@@ -182,15 +182,7 @@ echo.
 exit /b %LASTERROR%
 
 :MAIN
-rem call :CMD "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_install.xsh"
-rem exit /b
-rem 
-rem :CMD
-rem echo.^>%*
-rem echo.
-rem (
-rem   %*
-rem )
+rem call "%%CONTOOLS_ROOT%%/build/callln.bat" "%%PYTHON_EXE_PATH%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_install.xsh"
 rem exit /b
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
@@ -299,7 +291,7 @@ rem installing...
 if not %WINDOWS_MAJOR_VER% GTR 5 (
   echo.Installing Redistributables...
 
-  call :CMD start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
+  call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
 
   echo.
 )
@@ -377,12 +369,12 @@ if defined INSTALL_NPP_TO_DIR set "NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE= /D=%INSTALL
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if %INSTALL_NPP_X64_VER% NEQ 0 (
-    call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+    call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
   ) else (
-    call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+    call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
   )
 ) else (
-  call :CMD start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
+  call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
 )
 
 echo.
@@ -402,7 +394,7 @@ echo.Applying Notepad++ patches...
 
 if not exist "%DETECTED_NPP_ROOT%/updater/libcurl.dll.bak" move "%DETECTED_NPP_ROOT%\updater\libcurl.dll" "%DETECTED_NPP_ROOT%\updater\libcurl.dll.bak" >nul
 
-call :XCOPY_DIR "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
+call "%%CONTOOLS_ROOT%%/build/xcopy_dir.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/libcurl" "%%DETECTED_NPP_ROOT%%/updater" /E /Y /D
 
 :IGNORE_NPP_EDITOR_PATCHES
 
@@ -419,7 +411,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     rem CAUTION:
     rem   The plugin installer is broken, we must always point the Notepad++ installation location!
     rem
-    call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+    call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
   ) else (
     rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
     for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86=%%~fi"
@@ -427,7 +419,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     rem CAUTION:
     rem   The plugin installer is broken, we must always point the Notepad++ installation location!
     rem
-    call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+    call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
   )
 ) else (
   rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
@@ -436,7 +428,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
   rem CAUTION:
   rem   The plugin installer is broken, we must always point the Notepad++ installation location!
   rem
-  call :CMD start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+  call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
 )
 
 echo.
@@ -471,12 +463,12 @@ echo.Installing WinMerge...
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if %INSTALL_WINMERGE_X64_VER% NEQ 0 (
-    call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X64%%"
+    call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X64%%"
   ) else (
-    call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
+    call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
   )
 ) else (
-  call :CMD start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
+  call "%%CONTOOLS_ROOT%%/build/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
 )
 
 echo.
@@ -485,61 +477,6 @@ call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_i
 
 echo.
 
-exit /b 0
-
-:XCOPY_FILE
-if not exist "\\?\%~f3\*" (
-  call :MAKE_DIR "%%~3" || exit /b
-)
-call "%%CONTOOLS_ROOT%%/std/xcopy_file.bat"%%XCOPY_FILE_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:XCOPY_DIR
-if not exist "\\?\%~f2\*" (
-  call :MAKE_DIR "%%~2" || exit /b
-)
-call "%%CONTOOLS_ROOT%%/std/xcopy_dir.bat"%%XCOPY_DIR_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:MAKE_DIR
-for /F "eol= tokens=* delims=" %%i in ("%~1\.") do set "FILE_PATH=%%~fi"
-
-echo.^>mkdir "%FILE_PATH%"
-mkdir "%FILE_PATH%" 2>nul || if exist "\\?\%SystemRoot%\System32\robocopy.exe" ( "%SystemRoot%\System32\robocopy.exe" /CREATE "%EMPTY_DIR_TMP%" "%FILE_PATH%" >nul ) else type 2>nul || (
-  echo.%?~nx0%: error: could not create a target file directory: "%FILE_PATH%".
-  echo.
-  exit /b 255
-) >&2
-echo.
-exit /b
-
-:XMOVE_FILE
-call "%%CONTOOLS_ROOT%%/std/xmove_file.bat"%%XMOVE_FILE_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:XMOVE_DIR
-call "%%CONTOOLS_ROOT%%/std/xmove_dir.bat"%%XMOVE_DIR_CMD_BARE_FLAGS%% %%*
-echo.
-exit /b
-
-:CMD
-echo.^>%*
-(
-  %*
-)
-exit /b
-
-:CANONICAL_PATH
-setlocal DISABLEDELAYEDEXPANSION
-for /F "eol= tokens=* delims=" %%i in ("%~2\.") do set "RETURN_VALUE=%%~fi"
-rem set "RETURN_VALUE=%RETURN_VALUE:\=/%"
-(
-  endlocal
-  set "%~1=%RETURN_VALUE%"
-)
 exit /b 0
 
 :CANCEL_INSTALL
