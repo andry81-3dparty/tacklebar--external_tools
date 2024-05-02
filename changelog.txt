@@ -1,4 +1,7 @@
 2024.05.03:
+* changed: README.md: git submodules notice, dependencies update
+
+2024.05.03:
 * fixed: replaced `net session` admin privileges check with more reliable variant
 
 2024.05.03:

@@ -1,4 +1,4 @@
-> **Warning** FOR GIT USERS: To clone including all dependecies you must use [fork](https://github.com/aaronplusone/vcstool/tree/feature-sparse-checkouts) (has the sparse checkout feature) of the [vcstool](https://github.com/dirk-thomas/vcstool) python module (currently the sparse checkout feature is not merged).
+> **Note** To clone only required set of git submodules using sparse checkout feature, you must use [vcstool](https://github.com/aaronplusone/vcstool/tree/feature-sparse-checkouts) script and `.externals` file, otherwise the `git clone --recurse-submodules` would use `.gitmodules` and checkout all modules recursively and completely, including all nested submodules which is not required to checkout.
 
 ### External application tools:
   
@@ -75,6 +75,9 @@
 ## <a name="dependants">Dependants</a>
 
 * https://github.com/andry81/tacklebar
+* https://github.com/andry81-3dparty/tacklebar--external_tools-win7
+  * https://github.com/andry81-3dparty/tacklebar--external_tools-win7-python3
+* https://github.com/andry81-3dparty/tacklebar--external_tools-winxp
 
 ## <a name="copyright-and-license">Copyright and License</a>
 
