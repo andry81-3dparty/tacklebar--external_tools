@@ -78,4 +78,4 @@
 
 ## <a name="copyright-and-license">Copyright and License</a>
 
-Code and documentation copyright 2021 Andrey Dibrov. Code released under [MIT License](https://github.com/andry81-3dparty/tacklebar--external_tools/tree/HEAD/license.txt)
+Code and documentation copyright 2020 Andrey Dibrov. Code released under [MIT License](https://github.com/andry81-3dparty/tacklebar--external_tools/tree/HEAD/license.txt)
