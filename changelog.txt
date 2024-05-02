@@ -1,4 +1,7 @@
 2024.05.03:
+* fixed: replaced `net session` admin privileges check with more reliable variant
+
+2024.05.03:
 * changed: README.md: copyright year as project born year
 
 2024.04.11:
