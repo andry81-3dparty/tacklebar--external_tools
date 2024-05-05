@@ -4,7 +4,8 @@ if /i "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT_INIT0_DIR%" == "%~dp0" exit /b 0
 
 set "TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT_INIT0_DIR=%~dp0"
 
-if not defined NEST_LVL set NEST_LVL=0
+rem cast to integer
+set /A NEST_LVL+=0
 
 rem Do not make a file or a directory
 if defined NO_GEN set /A NO_GEN+=0
@@ -18,24 +19,24 @@ if defined NO_LOG_OUTPUT set /A NO_LOG_OUTPUT+=0
 rem Do not change code page
 if defined NO_CHCP set /A NO_CHCP+=0
 
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                "%%~dp0.."
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
+call "%%~dp0canonical_path_if_ndef.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT                "%%~dp0.."
+call "%%~dp0canonical_path_if_ndef.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_externals"
 
 if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%\*" (
   echo.%~nx0: error: TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT directory does not exist: "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%".
   exit /b 255
 ) >&2
 
-if not defined PROJECT_OUTPUT_ROOT                                  call "%%~dp0canonical_path.bat" PROJECT_OUTPUT_ROOT                                  "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_out"
-if not defined PROJECT_LOG_ROOT                                     call "%%~dp0canonical_path.bat" PROJECT_LOG_ROOT                                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/.log"
+call "%%~dp0canonical_path_if_ndef.bat" PROJECT_OUTPUT_ROOT                                  "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_out"
+call "%%~dp0canonical_path_if_ndef.bat" PROJECT_LOG_ROOT                                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/.log"
 
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_config"
-if not defined TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  call "%%~dp0canonical_path.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  "%%PROJECT_OUTPUT_ROOT%%/config/tacklebar"
+call "%%~dp0canonical_path_if_ndef.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT   "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_ROOT%%/_config"
+call "%%~dp0canonical_path_if_ndef.bat" TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT  "%%PROJECT_OUTPUT_ROOT%%/config/tacklebar"
 
 rem retarget externals of an external project
 
-if not defined CONTOOLS_PROJECT_EXTERNALS_ROOT                      call "%%~dp0canonical_path.bat" CONTOOLS_PROJECT_EXTERNALS_ROOT                      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
-if not defined TACKLEBAR_PROJECT_EXTERNALS_ROOT                     call "%%~dp0canonical_path.bat" TACKLEBAR_PROJECT_EXTERNALS_ROOT                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
+call "%%~dp0canonical_path_if_ndef.bat" CONTOOLS_PROJECT_EXTERNALS_ROOT                      "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
+call "%%~dp0canonical_path_if_ndef.bat" TACKLEBAR_PROJECT_EXTERNALS_ROOT                     "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%"
 
 rem init immediate external projects
 
@@ -59,15 +60,15 @@ rem Windows XP is minimal
 call "%%CONTOOLS_ROOT%%/std/check_windows_version.bat" 5 1 || exit /b
 
 if %NO_GEN%0 EQU 0 (
-  call "%%CONTOOLS_ROOT%%/std/mkdir_if_notexist.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b 10
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/mkdir_if_notexist.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
 )
 
 if not defined LOAD_CONFIG_VERBOSE if %INIT_VERBOSE%0 NEQ 0 set LOAD_CONFIG_VERBOSE=1
 
 rem reuse system config from `tacklebar` project from the externals, skip user config
 if %NO_GEN%0 EQU 0 (
-  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -gen_system_config -no_load_user_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/_config" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
-) else call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -no_load_user_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/_config" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+  call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -gen_system_config -no_load_user_config -- "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/_config" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
+) else call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -no_load_user_config -- "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/_config" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
 
 rem skip system config, load user config
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_config_dir.bat" -no_load_system_config "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_INPUT_CONFIG_ROOT%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_OUTPUT_CONFIG_ROOT%%" || exit /b
@@ -79,7 +80,7 @@ if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/__init__/_
 )
 
 if %NO_GEN%0 EQU 0 (
-  call "%%CONTOOLS_ROOT%%/std/mkdir_if_notexist.bat" "%%PROJECT_OUTPUT_ROOT%%" || exit /b 11
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/mkdir_if_notexist.bat" "%%PROJECT_OUTPUT_ROOT%%" || exit /b
 )
 
 if %NO_CHCP%0 EQU 0 (
