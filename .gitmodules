@@ -1,38 +1,47 @@
 [submodule "contools"]
   path = _externals/contools
   url = https://github.com/andry81/contools
+  branch = master
   shallow = true
 
 [submodule "tacklebar"]
   path = _externals/tacklebar
   url = https://github.com/andry81/tacklebar
+  branch = master
   shallow = true
 
 [submodule "tacklelib"]
   path = _externals/tacklelib
   url = https://github.com/andry81/tacklelib
+  branch = master
   shallow = true
 
 [submodule "fpwestlake-conutils"]
   path = _externals/fpwestlake-conutils
   url = https://github.com/andry81-3dparty/external-tools--fpwestlake-conutils
+  branch = 20010118
 
 [submodule "gnuwin32"]
   path = _externals/gnuwin32
   url = https://github.com/andry81-3dparty/external-tools--gnuwin32
+  branch = 20101227
 
 [submodule "7zip"]
   path = _externals/7zip
   url = https://github.com/andry81-3dparty/external-tools--7zip
+  branch = 22_01_release
 
 [submodule "sysinternals"]
   path = _externals/sysinternals
   url = https://github.com/andry81-3dparty/external-tools--sysinternals
+  branch = 20230412
 
 [submodule "external_tools-win7"]
   path = _externals/apps/win7
   url = https://github.com/andry81-3dparty/tacklebar--external_tools-win7
+  branch = master
 
 [submodule "external_tools-winxp"]
   path = _externals/apps/winxp
   url = https://github.com/andry81-3dparty/tacklebar--external_tools-winxp
+  branch = master
