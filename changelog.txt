@@ -1,3 +1,6 @@
+2024.06.08:
+* changed: README_EN.txt: readme update
+
 2024.05.05:
 * changed: __init__: back merge from `tacklebar` project
 
