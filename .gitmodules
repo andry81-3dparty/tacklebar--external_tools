@@ -2,19 +2,22 @@
   path = _externals/contools
   url = https://github.com/andry81/contools
   branch = master
-  shallow = true
+  fetchRecurseSubmodules = false
+  update = none
 
 [submodule "tacklebar"]
   path = _externals/tacklebar
   url = https://github.com/andry81/tacklebar
   branch = master
-  shallow = true
+  fetchRecurseSubmodules = false
+  update = none
 
 [submodule "tacklelib"]
   path = _externals/tacklelib
   url = https://github.com/andry81/tacklelib
   branch = master
-  shallow = true
+  fetchRecurseSubmodules = false
+  update = none
 
 [submodule "fpwestlake-conutils"]
   path = _externals/fpwestlake-conutils

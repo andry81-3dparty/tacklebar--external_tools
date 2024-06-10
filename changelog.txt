@@ -1,3 +1,7 @@
+2024.06.17:
+* new: ._install/script_init.bat: redirection to `._install/script_init.bat` script of the `tacklebar` project
+* changed: _install.bat, ._install/script_init.bat: installation initialization is extracted into common script
+
 2024.06.08:
 * changed: README_EN.txt: readme update
 
