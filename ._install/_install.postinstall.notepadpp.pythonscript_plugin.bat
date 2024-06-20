@@ -26,14 +26,46 @@ if %DETECTED_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_DLL_X64_VER% NEQ 0 (
   set "PYTHON_PACKAGE_DIR_NAME=core-python-3.12.1-x64"
 ) else set "PYTHON_PACKAGE_DIR_NAME=core-python-3.12.1-x86"
 
+call "%%CONTOOLS_ROOT%%/std/strlen.bat" "" "%%PYTHON_EXTRACT_TEMP_DIR%%\%%PYTHON_PACKAGE_DIR_NAME%%\"
+set "EXTRACTED_DIR_PATH_LEN=%ERRORLEVEL%"
+
+rem CAUTION:
+rem   1. If a variable is empty, then it would not be expanded in the `cmd.exe`
+rem      command line or in the inner expression of the
+rem      `for /F "usebackq ..." %%i in (`<inner-expression>`) do ...`
+rem      statement.
+rem   2. The `cmd.exe` command line or the inner expression of the
+rem      `for /F "usebackq ..." %%i in (`<inner-expression>`) do ...`
+rem      statement does expand twice.
+rem
+rem   We must expand the command line into a variable to avoid these above.
+rem
+set ?.=@dir "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%\*.exe" "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%\*.dll" /A:-D /B /O:N /S 2^>nul
+
 call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/extract_files_from_archive.bat" ^
   "%%PYTHON_EXTRACT_TEMP_DIR%%" "%%PYTHON_PACKAGE_DIR_NAME%%" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/win7/deploy/python/3.x/core/dlls/core/%%PYTHON_PACKAGE_DIR_NAME%%.7z" -y && (
   echo.
+
+  rem build extracted files list
+  (
+    for /F "usebackq eol= tokens=* delims=" %%i in (`%%?.%%`) do echo.%%i
+  ) > "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst"
+
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xmove_file.bat" "%%PYTHON_EXTRACT_TEMP_DIR%%\%%PYTHON_PACKAGE_DIR_NAME%%\" "*.*" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\" /E /Y || (
     echo.%?~nx0%: error: could not move Python `core` extracted directory: "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\"
     echo.
     exit /b 255
   ) >&2
+
+  rem grant all extracted AND copied executables inheritance permissions (inheritance permissions CAN NOT BE COPIED, so must be set after copy)
+  for /F "usebackq eol= tokens=* delims=" %%i in ("%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst") do (
+    set "FILE_PATH=%%i"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/callln.bat" "%SystemRoot%\System32\icacls.exe" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\%%FILE_PATH:~%EXTRACTED_DIR_PATH_LEN%%%" /inheritance:e || (
+      echo.%?~nx0%: error: could not grant to extracted executable file inheritance permissions: "%%i"
+      echo.
+      exit /b 255
+    ) >&2
+  )
 )
 
 :SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_UPDATE

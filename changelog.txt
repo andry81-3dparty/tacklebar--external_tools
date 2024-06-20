@@ -1,3 +1,6 @@
+2024.06.21:
+* fixed: ._install/_install.postinstall.notepadpp.pythonscript_plugin.bat: Notepad++ PythonScript python dll load under different user
+
 2024.06.17:
 * new: ._install/script_init.bat: redirection to `._install/script_init.bat` script of the `tacklebar` project
 * changed: _install.bat, ._install/script_init.bat: installation initialization is extracted into common script
