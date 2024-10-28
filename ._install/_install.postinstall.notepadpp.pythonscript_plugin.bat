@@ -48,7 +48,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
 
   rem build extracted files list
   (
-    for /F "usebackq eol= tokens=* delims=" %%i in (`%%?.%%`) do echo.%%i
+    for /F "usebackq tokens=* delims="eol^= %%i in (`%%?.%%`) do echo.%%i
   ) > "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst"
 
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xmove_file.bat" "%%PYTHON_EXTRACT_TEMP_DIR%%\%%PYTHON_PACKAGE_DIR_NAME%%\" "*.*" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\" /E /Y || (
@@ -58,7 +58,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   ) >&2
 
   rem grant all extracted AND copied executables inheritance permissions (inheritance permissions CAN NOT BE COPIED, so must be set after copy)
-  for /F "usebackq eol= tokens=* delims=" %%i in ("%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst") do (
+  for /F "usebackq tokens=* delims="eol^= %%i in ("%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst") do (
     set "FILE_PATH=%%i"
     call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/callln.bat" "%SystemRoot%\System32\icacls.exe" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\%%FILE_PATH:~%EXTRACTED_DIR_PATH_LEN%%%" /inheritance:e || (
       echo.%?~nx0%: error: could not grant to extracted executable file inheritance permissions: "%%i"
