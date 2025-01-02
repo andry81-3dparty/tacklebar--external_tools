@@ -70,7 +70,7 @@ echo. * Notepad++ (%NOTEPADPP_MIN_VER_STR%+)
 echo.   https://notepad-plus-plus.org/downloads/
 echo. * Notepad++ PythonScript plugin (%NOTEPADPP_PYTHON_SCRIPT_PLUGIN_MIN_VER_STR%+)
 echo.   https://github.com/bruderstein/PythonScript
-echo. * WinMerge (%WINMERGE_MIN_VER_STR%+)
+echo. * WinMerge (Windows 7+, XP x86 SP3+: %WINMERGE_MIN_VER_STR%+, Windows XP x64: 2.16.2)
 echo.   https://winmerge.org/downloads
 echo. * Visual C++ 2008 Redistributables (%VCREDIST_2008_MIN_VER_STR%+)
 echo.   https://www.catalog.update.microsoft.com/Search.aspx?q=kb2538243
@@ -328,7 +328,11 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
   )
 ) else (
-  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
+  if %INSTALL_WINMERGE_X64_VER% NEQ 0 (
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X64%%"
+  ) else (
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
+  )
 )
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.winmerge.bat"
