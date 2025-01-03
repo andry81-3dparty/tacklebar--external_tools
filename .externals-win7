@@ -3,4 +3,4 @@ repositories:
   _externals/apps/win7:
     type:         git
     url:          https://github.com/andry81-3dparty/tacklebar--external_tools-win7
-    version:      master
+    version:      20250102

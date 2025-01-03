@@ -1,3 +1,10 @@
+2025.01.03:
+* fixed: _install.bat: minor fixup
+* new: _config, ._install/_install.postinstall.notepadpp.pythonscript_plugin.bat: python `site-packages` directory cleanup
+* changed: _install.bat: always ask to install or skip a component
+* changed: .externals*: externals retarget
+* changed: _config: configuration retarget and update
+
 2025.01.02:
 * new: _install.bat: `WinMerge x64` install under `Windows XP x64 SP2`
 

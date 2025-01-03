@@ -23,8 +23,8 @@ set "PYTHON_EXTRACT_TEMP_DIR=%SCRIPT_TEMP_CURRENT_DIR%/deploy/python"
 call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/mkdir.bat" "%%PYTHON_EXTRACT_TEMP_DIR%%"
 
 if %DETECTED_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_DLL_X64_VER% NEQ 0 (
-  set "PYTHON_PACKAGE_DIR_NAME=core-python-3.12.1-x64"
-) else set "PYTHON_PACKAGE_DIR_NAME=core-python-3.12.1-x86"
+  set "PYTHON_PACKAGE_DIR_NAME=%PYTHON_CORE_PACKAGE_X64_FILE_NAME%"
+) else set "PYTHON_PACKAGE_DIR_NAME=%PYTHON_CORE_PACKAGE_X64_FILE_NAME%"
 
 call "%%CONTOOLS_ROOT%%/std/strlen.bat" "" "%%PYTHON_EXTRACT_TEMP_DIR%%\%%PYTHON_PACKAGE_DIR_NAME%%\"
 set "EXTRACTED_DIR_PATH_LEN=%ERRORLEVEL%"
@@ -83,19 +83,51 @@ if not exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\*" (
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIBS_INSTALL
 ) >&2
 
-if exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\psutil\*" (
-  echo.%?~nx0%: info: Python `psutil` lib install is skipped, lib directory is found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\psutil".
-  echo.
-  goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIB_PSUTIL_EXISTED
-) >&2
+rem cleanup `site-packages` directory
+
+echo.Cleanuping python `site-packages` directory...
+echo.
+
+echo.  * "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\"
+echo.
+
+if %DETECTED_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_DLL_X64_VER% NEQ 0 (
+  set PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST="%PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST_X64%"
+) else set PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST="%PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST_X86%"
+
+rem escape wildcards
+
+setlocal ENABLEDELAYEDEXPANSION & for /F "tokens=* delims="eol^= %%i in ("!PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST:$=$24!") do endlocal & set "__STRING__=%%i"
+
+call "%%CONTOOLS_ROOT%%/std/encode/encode_glob_chars.bat"
+
+set IS_PYTHON_SITE_PACKAGES_REMOVED=0
+
+setlocal ENABLEDELAYEDEXPANSION & for /F "tokens=* delims="eol^= %%i in ("!__STRING__!") do endlocal & set "PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST=%%i"
+
+for %%i in (%PYTHON_SITE_PACKAGES_CLEANUP_DIR_LIST%) do (
+  rem decode wildcards
+  set "__STRING__=%%~i"
+
+  call "%%CONTOOLS_ROOT%%/std/encode/decode_glob_chars.bat"
+
+  set "PYTHON_SITE_PACKAGES_CLEANUP_DIR_PATH="
+  setlocal ENABLEDELAYEDEXPANSION & for /F "tokens=* delims="eol^= %%j in ("!__STRING__:$24=$!") do endlocal & for /D %%k in ("%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\%%j") do if exist "%%~k\*" (
+    echo.    %%~nxk
+    rmdir /S /Q "%%~k"
+    set IS_PYTHON_SITE_PACKAGES_REMOVED=1
+  )
+)
+
+if %IS_PYTHON_SITE_PACKAGES_REMOVED% NEQ 0 echo.
 
 set "PSUTIL_EXTRACT_TEMP_DIR=%SCRIPT_TEMP_CURRENT_DIR%/deploy/psutil"
 
 call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/mkdir.bat" "%%PSUTIL_EXTRACT_TEMP_DIR%%"
 
 if %DETECTED_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_DLL_X64_VER% NEQ 0 (
-  set "PSUTIL_PACKAGE_DIR_NAME=psutil-5.9.7-x64"
-) else set "PSUTIL_PACKAGE_DIR_NAME=psutil-5.9.7-x86"
+  set "PSUTIL_PACKAGE_DIR_NAME=%PYTHON_MODULE_PSUTIL_PACKAGE_X64_FILE_NAME%"
+) else set "PSUTIL_PACKAGE_DIR_NAME=%PYTHON_MODULE_PSUTIL_PACKAGE_X64_FILE_NAME%"
 
 call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/extract_files_from_archive.bat" ^
   "%%PSUTIL_EXTRACT_TEMP_DIR%%" "%%PSUTIL_PACKAGE_DIR_NAME%%/Lib/site-packages" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/win7/deploy/python/3.x/modules/psutil/%%PSUTIL_PACKAGE_DIR_NAME%%.7z" -y && (
@@ -107,7 +139,6 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   ) >&2
 )
 
-:SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIB_PSUTIL_EXISTED
 :SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIBS_INSTALL
 
 :SKIP_NPP_PYTHONSCRIPT_PLUGIN_UPDATE_WIN7

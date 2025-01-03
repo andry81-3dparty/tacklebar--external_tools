@@ -165,26 +165,41 @@ rem NOTE:
 rem   The default is Notepad++ 32-bit to use 32-bit Plugin Manager as most compatible for plugins.
 set "INSTALL_NPP_X64_VER=0"
 
-if not %WINDOWS_MAJOR_VER% GTR 5 goto REPEAT_INSTALL_NPP_X64_ASK_END
-if %WINDOWS_X64_VER% EQU 0 goto REPEAT_INSTALL_NPP_X64_ASK_END
+if not %WINDOWS_MAJOR_VER% GTR 5 goto REPEAT_INSTALL_NPP_X32_ASK
+if %WINDOWS_X64_VER% EQU 0 goto REPEAT_INSTALL_NPP_X32_ASK
 
 :REPEAT_INSTALL_NPP_X64_ASK
 set "CONTINUE_INSTALL_ASK="
 echo.Do you want to install 32-bit or 64-bit version of Notepad++: 3[2]-bit/6[4]-bit/[s]kip/[c]ancel?
 set /P "CONTINUE_INSTALL_ASK="
 
-if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_NPP_X64_ASK_END
-if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_NPP_X64_VER=1" & goto REPEAT_INSTALL_NPP_X64_ASK_END
+if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_NPP_X32_ASK_END
+if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_NPP_X64_VER=1" & goto REPEAT_INSTALL_NPP_X32_ASK_END
 if /i "%CONTINUE_INSTALL_ASK%" == "s" (
   echo.%?~nx0%: warning: Notepad++ installation is skipped.
   echo.
   goto SKIP_NPP_INSTALL
-)
+) >&2
 if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
 
 goto REPEAT_INSTALL_NPP_X64_ASK
 
-:REPEAT_INSTALL_NPP_X64_ASK_END
+:REPEAT_INSTALL_NPP_X32_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to install 32-bit version of Notepad++: [y]es/[s]kip/[c]ancel?
+set /P "CONTINUE_INSTALL_ASK="
+
+if "%CONTINUE_INSTALL_ASK%" == "y" goto REPEAT_INSTALL_NPP_X32_ASK_END
+if /i "%CONTINUE_INSTALL_ASK%" == "s" (
+  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.
+  goto SKIP_NPP_INSTALL
+) >&2
+if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
+
+goto REPEAT_INSTALL_NPP_X32_ASK
+
+:REPEAT_INSTALL_NPP_X32_ASK_END
 
 if not %WINDOWS_MAJOR_VER% GTR 5 goto SELECT_NPP_INSTALL_DIR_END
 
@@ -197,8 +212,10 @@ call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_i
 if not defined DETECTED_NPP_EDITOR goto PREVIOUS_NPP_INSTALL_DIR_OK
 if %DETECTED_NPP_EDITOR_X64_VER%0 EQU %INSTALL_NPP_X64_VER%0 goto PREVIOUS_NPP_INSTALL_DIR_OK
 
-echo.%?~nx0%: warning: previous Notepad++ installation has different bitness: "%DETECTED_NPP_EDITOR%".
-echo.
+(
+  echo.%?~nx0%: warning: previous Notepad++ installation has different bitness: "%DETECTED_NPP_EDITOR%".
+  echo.
+) >&2
 
 :SELECT_NPP_INSTALL_DIR
 echo "Selecting new Notepad++ installation directory..."
@@ -211,7 +228,7 @@ if not defined INSTALL_NPP_TO_DIR (
   echo.%?~nx0%: warning: Notepad++ installation is skipped.
   echo.
   goto SKIP_NPP_INSTALL
-)
+) >&2
 
 if /i not "%DETECTED_NPP_ROOT%" == "%INSTALL_NPP_TO_DIR%" goto SELECT_NPP_INSTALL_DIR_END
 
@@ -260,6 +277,23 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xcopy_dir.bat" "%%TACKLEBAR_EXTERNAL_TOOLS_P
 
 :IGNORE_NPP_EDITOR_PATCHES
 
+:REPEAT_INSTALL_NPP_PYTHONSCRIPT_PLUGIN_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to install Notepad++ PythonScript plugin: [y]es/[s]kip/[c]ancel?
+set /P "CONTINUE_INSTALL_ASK="
+
+if "%CONTINUE_INSTALL_ASK%" == "y" goto REPEAT_INSTALL_NPP_PYTHONSCRIPT_PLUGIN_ASK_END
+if /i "%CONTINUE_INSTALL_ASK%" == "s" (
+  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.
+  goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_INSTALL
+) >&2
+if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
+
+goto REPEAT_INSTALL_NPP_PYTHONSCRIPT_PLUGIN_ASK
+
+:REPEAT_INSTALL_NPP_PYTHONSCRIPT_PLUGIN_ASK_END
+
 echo.Installing Notepad++ PythonScript plugin...
 echo.
 
@@ -294,6 +328,8 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
 )
 
+:SKIP_NPP_PYTHONSCRIPT_PLUGIN_INSTALL
+
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.notepadpp.pythonscript_plugin.bat"
 
 call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.postinstall.notepadpp.pythonscript_plugin.bat" || goto CANCEL_INSTALL
@@ -302,21 +338,41 @@ call "%%?~dp0%%.%%?~n0%%/%%?~n0%%.postinstall.notepadpp.pythonscript_plugin.bat"
 
 set "INSTALL_WINMERGE_X64_VER=0"
 
-if not %WINDOWS_MAJOR_VER% GTR 5 goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
-if %WINDOWS_X64_VER% EQU 0 goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+if not %WINDOWS_MAJOR_VER% GTR 5 goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK
+if %WINDOWS_X64_VER% EQU 0 goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK
 
 :REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK
 set "CONTINUE_INSTALL_ASK="
-echo.Do you want to install 32-bit or 64-bit version of WinMerge: 3[2]-bit/6[4]-bit/[c]ancel?
+echo.Do you want to install 32-bit or 64-bit version of WinMerge: 3[2]-bit/6[4]-bit/[s]kip/[c]ancel?
 set /P "CONTINUE_INSTALL_ASK="
 
-if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
-if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_WINMERGE_X64_VER=1" & goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
+if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_WINMERGE_X64_VER=1" & goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
+if /i "%CONTINUE_INSTALL_ASK%" == "s" (
+  echo.%?~nx0%: warning: WinMerge installation is skipped.
+  echo.
+  goto SKIP_WINMERGE_INSTALL
+) >&2
 if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
 
 goto REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK
 
-:REPEAT_INSTALL_WINMERGE_SETUP_X64_ASK_END
+:REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK
+set "CONTINUE_INSTALL_ASK="
+echo.Do you want to install 32-bit version of WinMerge: [y]es/[s]kip/[c]ancel?
+set /P "CONTINUE_INSTALL_ASK="
+
+if "%CONTINUE_INSTALL_ASK%" == "y" goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
+if /i "%CONTINUE_INSTALL_ASK%" == "s" (
+  echo.%?~nx0%: warning: WinMerge installation is skipped.
+  echo.
+  goto SKIP_WINMERGE_INSTALL
+) >&2
+if /i "%CONTINUE_INSTALL_ASK%" == "c" goto CANCEL_INSTALL
+
+goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK
+
+:REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
 
 echo.Installing WinMerge...
 echo.
@@ -334,6 +390,8 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
   )
 )
+
+:SKIP_WINMERGE_INSTALL
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.winmerge.bat"
 
