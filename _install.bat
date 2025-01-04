@@ -53,12 +53,12 @@ rem call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/callln.bat" "%%PYTHON_EXE_PATH%%" "%%TAC
 rem exit /b
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
-  if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/.git/*" (
+  if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/*" (
     echo.%?~nx0%: error: `.externals-win7` externals must be checkout before install.
     exit /b 255
   ) >&2
 ) else (
-  if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/.git/*" (
+  if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/*" (
     echo.%?~nx0%: error: `.externals-winxp` externals must be checkout before install.
     exit /b 255
   ) >&2
