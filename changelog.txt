@@ -1,3 +1,7 @@
+2025.01.04:
+* fixed: __init__: error around invalid `{{ACP}}` parameter
+* fixed: _install.bat: error `__init__.bat: error: COMMANDER_SCRIPTS_ROOT environment variable is not defined.`
+
 2025.01.03:
 * fixed: _install.bat: minor fixup
 * new: _config, ._install/_install.postinstall.notepadpp.pythonscript_plugin.bat: python `site-packages` directory cleanup

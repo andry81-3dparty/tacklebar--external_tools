@@ -48,10 +48,13 @@ if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/contools/__init__/__
 )
 
 if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklebar/__init__/__init__.bat" (
+  rem disable code page change in nested __init__
+  set /A NO_CHCP+=1
   rem disable generation
   set /A NO_GEN+=1
   call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/__init__/__init__.bat" || exit /b
   set /A NO_GEN-=1
+  set /A NO_CHCP-=1
 )
 
 call "%%CONTOOLS_ROOT%%/std/get_windows_version.bat" || exit /b
