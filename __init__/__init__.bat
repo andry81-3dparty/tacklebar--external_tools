@@ -79,7 +79,10 @@ call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/tools/load_c
 rem init external projects
 
 if exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/tacklelib/__init__/__init__.bat" (
+  rem disable code page change in nested __init__
+  set /A NO_CHCP+=1
   call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklelib/__init__/__init__.bat" -no_load_user_config || exit /b
+  set /A NO_CHCP-=1
 )
 
 if %NO_GEN%0 EQU 0 (
