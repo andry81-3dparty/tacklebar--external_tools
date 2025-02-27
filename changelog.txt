@@ -1,3 +1,11 @@
+2025.02.13:
+* changed: *.bat: global code cleanup
+* refactor: *.bat: global code refactor
+
+2025.02.13:
+* changed: *.bat: `CONTOOLS_UTILITIES_BIN_ROOT` variable renamed into `CONTOOLS_UTILS_BIN_ROOT`
+* changed: .externals: switch to `contools--utils` project
+
 2025.02.03:
 * changed: README.md: github markdown blockquotes update
 

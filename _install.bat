@@ -222,7 +222,7 @@ echo "Selecting new Notepad++ installation directory..."
 echo.
 
 set "INSTALL_NPP_TO_DIR="
-for /F "usebackq tokens=* delims="eol^= %%i in (`@"%%CONTOOLS_UTILITIES_BIN_ROOT%%/contools/wxFileDialog.exe" "" "%%DETECTED_NPP_ROOT%%" "Select new Notepad++ installation directory..." -d`) do set "INSTALL_NPP_TO_DIR=%%~fi"
+for /F "usebackq tokens=* delims="eol^= %%i in (`@"%%CONTOOLS_UTILS_BIN_ROOT%%/contools/wxFileDialog.exe" "" "%%DETECTED_NPP_ROOT%%" "Select new Notepad++ installation directory..." -d`) do set "INSTALL_NPP_TO_DIR=%%~fi"
 
 if not defined INSTALL_NPP_TO_DIR (
   echo.%?~nx0%: warning: Notepad++ installation is skipped.
