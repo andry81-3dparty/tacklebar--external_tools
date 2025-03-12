@@ -41,7 +41,7 @@ if defined FLAG_CHCP call "%%CONTOOLS_ROOT%%/std/restorecp.bat" -p
 
 set /A NEST_LVL-=1
 
-echo.%?~nx0%: info: installation log directory: "%PROJECT_LOG_DIR%".
+echo.%?~%: info: installation log directory: "%PROJECT_LOG_DIR%".
 echo.
 
 exit /b %LAST_ERROR%
@@ -52,12 +52,12 @@ rem exit /b
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/win7/*" (
-    echo.%?~nx0%: error: `.externals-win7` externals must be checkout before install.
+    echo.%?~%: error: `.externals-win7` externals must be checkout before install.
     exit /b 255
   ) >&2
 ) else (
   if not exist "%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%/apps/winxp/*" (
-    echo.%?~nx0%: error: `.externals-winxp` externals must be checkout before install.
+    echo.%?~%: error: `.externals-winxp` externals must be checkout before install.
     exit /b 255
   ) >&2
 )
@@ -176,7 +176,7 @@ set /P "CONTINUE_INSTALL_ASK="
 if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_NPP_X32_ASK_END
 if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_NPP_X64_VER=1" & goto REPEAT_INSTALL_NPP_X32_ASK_END
 if /i "%CONTINUE_INSTALL_ASK%" == "s" (
-  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.%?~%: warning: Notepad++ installation is skipped.
   echo.
   goto SKIP_NPP_INSTALL
 ) >&2
@@ -191,7 +191,7 @@ set /P "CONTINUE_INSTALL_ASK="
 
 if "%CONTINUE_INSTALL_ASK%" == "y" goto REPEAT_INSTALL_NPP_X32_ASK_END
 if /i "%CONTINUE_INSTALL_ASK%" == "s" (
-  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.%?~%: warning: Notepad++ installation is skipped.
   echo.
   goto SKIP_NPP_INSTALL
 ) >&2
@@ -213,7 +213,7 @@ if not defined DETECTED_NPP_EDITOR goto PREVIOUS_NPP_INSTALL_DIR_OK
 if %DETECTED_NPP_EDITOR_X64_VER%0 EQU %INSTALL_NPP_X64_VER%0 goto PREVIOUS_NPP_INSTALL_DIR_OK
 
 (
-  echo.%?~nx0%: warning: previous Notepad++ installation has different bitness: "%DETECTED_NPP_EDITOR%".
+  echo.%?~%: warning: previous Notepad++ installation has different bitness: "%DETECTED_NPP_EDITOR%".
   echo.
 ) >&2
 
@@ -225,20 +225,20 @@ set "INSTALL_NPP_TO_DIR="
 for /F "usebackq tokens=* delims="eol^= %%i in (`@"%%CONTOOLS_UTILS_BIN_ROOT%%/contools/wxFileDialog.exe" "" "%%DETECTED_NPP_ROOT%%" "Select new Notepad++ installation directory..." -d`) do set "INSTALL_NPP_TO_DIR=%%~fi"
 
 if not defined INSTALL_NPP_TO_DIR (
-  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.%?~%: warning: Notepad++ installation is skipped.
   echo.
   goto SKIP_NPP_INSTALL
 ) >&2
 
 if /i not "%DETECTED_NPP_ROOT%" == "%INSTALL_NPP_TO_DIR%" goto SELECT_NPP_INSTALL_DIR_END
 
-echo.%?~nx0%: error: you can not select previous Notepad++ installation directory with different bitness.
+echo.%?~%: error: you can not select previous Notepad++ installation directory with different bitness.
 echo.
 
 goto SELECT_NPP_INSTALL_DIR
 
 :PREVIOUS_NPP_INSTALL_DIR_OK
-echo.%?~nx0%: info: previous Notepad++ installation has the same bitness or does not exist: "%DETECTED_NPP_EDITOR%".
+echo.%?~%: info: previous Notepad++ installation has the same bitness or does not exist: "%DETECTED_NPP_EDITOR%".
 echo.
 
 :SELECT_NPP_INSTALL_DIR_END
@@ -284,7 +284,7 @@ set /P "CONTINUE_INSTALL_ASK="
 
 if "%CONTINUE_INSTALL_ASK%" == "y" goto REPEAT_INSTALL_NPP_PYTHONSCRIPT_PLUGIN_ASK_END
 if /i "%CONTINUE_INSTALL_ASK%" == "s" (
-  echo.%?~nx0%: warning: Notepad++ installation is skipped.
+  echo.%?~%: warning: Notepad++ installation is skipped.
   echo.
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_INSTALL
 ) >&2
@@ -349,7 +349,7 @@ set /P "CONTINUE_INSTALL_ASK="
 if "%CONTINUE_INSTALL_ASK%" == "2" goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
 if "%CONTINUE_INSTALL_ASK%" == "4" set "INSTALL_WINMERGE_X64_VER=1" & goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
 if /i "%CONTINUE_INSTALL_ASK%" == "s" (
-  echo.%?~nx0%: warning: WinMerge installation is skipped.
+  echo.%?~%: warning: WinMerge installation is skipped.
   echo.
   goto SKIP_WINMERGE_INSTALL
 ) >&2
@@ -364,7 +364,7 @@ set /P "CONTINUE_INSTALL_ASK="
 
 if "%CONTINUE_INSTALL_ASK%" == "y" goto REPEAT_INSTALL_WINMERGE_SETUP_X32_ASK_END
 if /i "%CONTINUE_INSTALL_ASK%" == "s" (
-  echo.%?~nx0%: warning: WinMerge installation is skipped.
+  echo.%?~%: warning: WinMerge installation is skipped.
   echo.
   goto SKIP_WINMERGE_INSTALL
 ) >&2
@@ -395,14 +395,14 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
 
 call "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/tacklebar/._install/_install.detect_3dparty.winmerge.bat"
 
-echo.%?~nx0%: info: installation is complete.
+echo.%?~%: info: installation is complete.
 echo.
 
 exit /b 0
 
 :CANCEL_INSTALL
 (
-  echo.%?~nx0%: info: installation is canceled.
+  echo.%?~%: info: installation is canceled.
   echo.
   exit /b 127
 ) >&2

@@ -14,7 +14,7 @@ echo.Updating Notepad++ PythonScript plugin Python installation...
 echo.
 
 if not exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\*" (
-  echo.%?~nx0%: warning: Python update is skipped, Python root directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%".
+  echo.%?~%: warning: Python update is skipped, Python root directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%".
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_UPDATE
 ) >&2
 
@@ -52,7 +52,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   ) > "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst"
 
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xmove_file.bat" "%%PYTHON_EXTRACT_TEMP_DIR%%\%%PYTHON_PACKAGE_DIR_NAME%%\" "*.*" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\" /E /Y || (
-    echo.%?~nx0%: error: could not move Python `core` extracted directory: "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\"
+    echo.%?~%: error: could not move Python `core` extracted directory: "%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\"
     echo.
     exit /b 255
   ) >&2
@@ -61,7 +61,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   for /F "usebackq tokens=* delims="eol^= %%i in ("%PYTHON_EXTRACT_TEMP_DIR%\%PYTHON_PACKAGE_DIR_NAME%.lst") do (
     set "FILE_PATH=%%i"
     call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/callln.bat" "%SystemRoot%\System32\icacls.exe" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\%%FILE_PATH:~%EXTRACTED_DIR_PATH_LEN%%%" /inheritance:e || (
-      echo.%?~nx0%: error: could not grant to extracted executable file inheritance permissions: "%%i"
+      echo.%?~%: error: could not grant to extracted executable file inheritance permissions: "%%i"
       echo.
       exit /b 255
     ) >&2
@@ -78,7 +78,7 @@ echo.Installing Notepad++ PythonScript plugin Python modules...
 echo.
 
 if not exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\*" (
-  echo.%?~nx0%: warning: Python lib install is skipped, Python Lib directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib".
+  echo.%?~%: warning: Python lib install is skipped, Python Lib directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib".
   echo.
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIBS_INSTALL
 ) >&2
@@ -133,7 +133,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   "%%PSUTIL_EXTRACT_TEMP_DIR%%" "%%PSUTIL_PACKAGE_DIR_NAME%%/Lib/site-packages" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/win7/deploy/python/3.x/modules/psutil/%%PSUTIL_PACKAGE_DIR_NAME%%.7z" -y && (
   echo.
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xmove_file.bat" "%%PSUTIL_EXTRACT_TEMP_DIR%%\%%PSUTIL_PACKAGE_DIR_NAME%%\Lib\site-packages\" "*.*" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\lib\site-packages\" /E /Y || (
-    echo.%?~nx0%: error: could not move Python `psutil` extracted directory: "%PSUTIL_EXTRACT_TEMP_DIR%\%PSUTIL_PACKAGE_DIR_NAME%\Lib\site-packages\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\"
+    echo.%?~%: error: could not move Python `psutil` extracted directory: "%PSUTIL_EXTRACT_TEMP_DIR%\%PSUTIL_PACKAGE_DIR_NAME%\Lib\site-packages\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\"
     echo.
     exit /b 255
   ) >&2
@@ -164,7 +164,7 @@ echo.Installing Notepad++ PythonScript plugin Python dlls...
 echo.
 
 rem if not exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\dlls\*" (
-rem   echo.%?~nx0%: warning: Python dlls install is skipped, Python dlls directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\dlls".
+rem   echo.%?~%: warning: Python dlls install is skipped, Python dlls directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\dlls".
 rem   echo.
 rem   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_DLLS_INSTALL
 rem ) >&2
@@ -175,7 +175,7 @@ rem   does find and load the `_ctypes.pyd` from there.
 rem   To workaround an external installation, we must to copy the Dll file into the Lib directory.
 rem
 if exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\_ctypes.pyd" (
-  echo.%?~nx0%: info: Python `_ctypes` dll install is skipped, dll file is found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\_ctypes.pyd".
+  echo.%?~%: info: Python `_ctypes` dll install is skipped, dll file is found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\_ctypes.pyd".
   echo.
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_DLL_CTYPES_EXISTED
 ) >&2
@@ -190,7 +190,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   "%%CTYPES_EXTRACT_TEMP_DIR%%" "ctypes-python-2.7.18/DLLs/_ctypes.pyd" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/python/2.x/core/dlls/ctypes/ctypes-python-2.7.18.7z" -y && (
   echo.
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xmove_file.bat" "%%CTYPES_EXTRACT_TEMP_DIR%%\ctypes-python-2.7.18\DLLs\" "_ctypes.pyd" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\lib\" /E /Y || (
-    echo.%?~nx0%: error: could not move Python `ctypes` extracted file: "%CTYPES_EXTRACT_TEMP_DIR%\ctypes-python-2.7.18\DLLs\_ctypes.pyd" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\_ctypes.pyd"
+    echo.%?~%: error: could not move Python `ctypes` extracted file: "%CTYPES_EXTRACT_TEMP_DIR%\ctypes-python-2.7.18\DLLs\_ctypes.pyd" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\_ctypes.pyd"
     echo.
     exit /b 255
   ) >&2
@@ -203,13 +203,13 @@ echo.Installing Notepad++ PythonScript plugin Python modules...
 echo.
 
 if not exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\*" (
-  echo.%?~nx0%: warning: Python lib install is skipped, Python Lib directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib".
+  echo.%?~%: warning: Python lib install is skipped, Python Lib directory is not found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib".
   echo.
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIBS_INSTALL
 ) >&2
 
 if exist "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\psutil\*" (
-  echo.%?~nx0%: info: Python `psutil` lib install is skipped, lib directory is found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\psutil".
+  echo.%?~%: info: Python `psutil` lib install is skipped, lib directory is found: "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\psutil".
   echo.
   goto SKIP_NPP_PYTHONSCRIPT_PLUGIN_PYTHON_LIB_PSUTIL_EXISTED
 ) >&2
@@ -224,7 +224,7 @@ call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" "%%CONTOOLS_BUILD_TOOLS_ROOT%%/ext
   "%%PSUTIL_EXTRACT_TEMP_DIR%%" "%%PSUTIL_PACKAGE_DIR_NAME%%/Lib/site-packages" "%%TACKLEBAR_EXTERNAL_TOOLS_PROJECT_EXTERNALS_ROOT%%/apps/winxp/deploy/python/2.x/modules/psutil/%%PSUTIL_PACKAGE_DIR_NAME%%.7z" -y && (
   echo.
   call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/xmove_file.bat" "%%PSUTIL_EXTRACT_TEMP_DIR%%\%%PSUTIL_PACKAGE_DIR_NAME%%\Lib\site-packages\" "*.*" "%%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%%\lib\site-packages\" /E /Y || (
-    echo.%?~nx0%: error: could not move Python `psutil` extracted directory: "%PSUTIL_EXTRACT_TEMP_DIR%\%PSUTIL_PACKAGE_DIR_NAME%\Lib\site-packages\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\"
+    echo.%?~%: error: could not move Python `psutil` extracted directory: "%PSUTIL_EXTRACT_TEMP_DIR%\%PSUTIL_PACKAGE_DIR_NAME%\Lib\site-packages\" -^> "%DETECTED_NPP_PYTHONSCRIPT_PLUGIN_ROOT%\lib\site-packages\"
     echo.
     exit /b 255
   ) >&2
