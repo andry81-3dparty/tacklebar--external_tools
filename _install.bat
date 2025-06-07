@@ -116,7 +116,7 @@ echo;
 rem Check Windows service pack version and warn the user
 if %WINDOWS_MAJOR_VER% GTR 5 goto WINDOWS_SP_VERSION_OK
 
-call "%%CONTOOLS_ROOT%%\wmi\get_wmic_os_sp_major_version.bat"
+call "%%CONTOOLS_WMI_ROOT%%\get_wmic_os_sp_major_version.bat"
 if not defined RETURN_VALUE goto WINDOWS_SP_VERSION_OK
 
 rem Windows XP x64 SP2 or Windows XP x86 SP3
