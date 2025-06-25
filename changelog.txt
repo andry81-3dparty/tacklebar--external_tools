@@ -1,3 +1,6 @@
+2025.06.25:
+* refactor: global directories rename to lower case name
+
 2025.06.07:
 * changed: _install.bat: minor improvement
 
