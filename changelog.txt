@@ -383,7 +383,7 @@
 
 2021.02.05:
 * fixed: _install: screen buffer resize is ignored (no scrollbar)
-* fixed: _install: command line truncation under Windows XP (Windowx XP bug over shortcut files)
+* fixed: _install: command line truncation under Windows XP (Windows XP bug over shortcut files)
 * fixed: _install: other minor fixup
 
 2021.02.04:
