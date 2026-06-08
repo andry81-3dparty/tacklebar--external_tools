@@ -156,7 +156,7 @@ rem installing...
 if not %WINDOWS_MAJOR_VER% GTR 5 (
   echo;Installing Redistributables...
 
-  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%VCREDIST_2008_SETUP%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%VCREDIST_2008_SETUP%%"
 
   echo;
 )
@@ -251,12 +251,12 @@ if defined INSTALL_NPP_TO_DIR set "NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE= /D=%INSTALL
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if %INSTALL_NPP_X64_VER% NEQ 0 (
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X64%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
   ) else (
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%NOTEPAD_PLUS_PLUS_SETUP_WIN7_X86%%"%%NOTEPAD_PLUS_PLUS_SETUP_CMD_LINE%%
   )
 ) else (
-  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%NOTEPAD_PLUS_PLUS_SETUP_WINXP_X86%%"
 )
 
 :SKIP_NPP_INSTALL
@@ -308,7 +308,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     rem CAUTION:
     rem   The plugin installer is broken, we must always point the Notepad++ installation location!
     rem
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X64%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
   ) else (
     rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
     for /F "eol=	 tokens=* delims=" %%i in ("%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%\.") do set "NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86=%%~fi"
@@ -316,7 +316,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
     rem CAUTION:
     rem   The plugin installer is broken, we must always point the Notepad++ installation location!
     rem
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WIN7_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
   )
 ) else (
   rem CAUTION: We must avoid forwarding slashes and trailing back slash here altogether
@@ -325,7 +325,7 @@ if %WINDOWS_MAJOR_VER% GTR 5 (
   rem CAUTION:
   rem   The plugin installer is broken, we must always point the Notepad++ installation location!
   rem
-  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
+  call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%SystemRoot%%\System32\msiexec.exe" /i "%%NOTEPAD_PLUS_PLUS_PYTHON_SCRIPT_PLUGIN_SETUP_WINXP_X86%%" INSTALLDIR="%%DETECTED_NPP_INSTALL_DIR%%"
 )
 
 :SKIP_NPP_PYTHONSCRIPT_PLUGIN_INSTALL
@@ -379,15 +379,15 @@ echo;
 
 if %WINDOWS_MAJOR_VER% GTR 5 (
   if %INSTALL_WINMERGE_X64_VER% NEQ 0 (
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X64%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%WINMERGE_SETUP_WIN7_X64%%"
   ) else (
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WIN7_X86%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%WINMERGE_SETUP_WIN7_X86%%"
   )
 ) else (
   if %INSTALL_WINMERGE_X64_VER% NEQ 0 (
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X64%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%WINMERGE_SETUP_WINXP_X64%%"
   ) else (
-    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start /B /WAIT "" "%%WINMERGE_SETUP_WINXP_X86%%"
+    call "%%CONTOOLS_BUILD_TOOLS_ROOT%%/call.bat" start "" /B /WAIT "%%WINMERGE_SETUP_WINXP_X86%%"
   )
 )
 
