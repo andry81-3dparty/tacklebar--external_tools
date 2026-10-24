@@ -1,3 +1,6 @@
+2026.10.24:
+* changed: *.bat: switched to use `call_.bat` script
+
 2026.08.21:
 * fixed: __init__/__init__.bat: initialization fixup
 
